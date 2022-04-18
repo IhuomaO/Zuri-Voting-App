@@ -1,0 +1,27 @@
+{
+  "name": "zuri-voting-app",
+  "version": "1.0.0",
+  "description": "A DApp that helps an organisation to setup an election for leadership position in its school.",
+  "main": "index.js",
+  "scripts": {
+    "test": "test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/IhuomaO/Zuri-Voting-App.git"
+  },
+  "keywords": [
+    "voting",
+    "hardhat",
+    "ethereum"
+  ],
+  "author": "indigo team",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/IhuomaO/Zuri-Voting-App/issues"
+  },
+  "homepage": "https://github.com/IhuomaO/Zuri-Voting-App#readme",
+  "devDependencies": {
+    "hardhat": "^2.9.3"
+  }
+}
