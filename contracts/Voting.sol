@@ -1,17 +1,19 @@
+// SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/access/AccessControl.sol";
 
 contract Voting is Ownable {
+    address public admin;
     address public chairman;
     address[] public teachers;
     address[] public bods;
     address[] public students;
-    uint256 candidateCount;
-    uint256 voterCount;
-    bool start;
-    bool end;
+    uint256 public candidateCount;
+    uint256 public voterCount;
+    bool public start;
+    bool public end;
 
     address[] public stakeholders; // Array of address to store address of stakeholders
     mapping(address => Stakeholder) public stakeholderDetails;
@@ -49,37 +51,42 @@ contract Voting is Ownable {
         string organizationTitle;
     }
 
+    ElectionDetails public electionDetails;
+
     //This function takes a csv file and assignes roles to each address on the csv
-    function assignRoles(address[] _stakeholdersAddress, string memory _role ) public onlyAdmin {
+    function assignRoles(address[]  _stakeholdersAddress, string memory _role ) public onlyAdmin {
         if ( _role == "Admin"){
-              chairman = _address;
+              chairman = _stakeholdersAddress;
         }
         if (_role == "BODs"){ 
             //assign roles bods
+             chairman = _stakeholdersAddress;
          }
          if (_role == "Teachers"){ 
             //assign roles Teachers
+             chairman = _stakeholdersAddress;
          } else {
              //assign roles Students
+              chairman = _stakeholdersAddress;
          }
         
     }
 
     modifier onlyAdmin() {
         // Modifier for only admin access
-        require(msg.sender == admin);
+        require(msg.sender == admin, "You are not system admin");
         _;
     }
 
      modifier onlyChairman() {
         // Modifier for only chairman access
-        require(msg.sender == chairman);
+        require(msg.sender == chairman, "Only the chairman can do this");
         _;
     }
 
      modifier onlyTrustee() {
         // Modifier for only bods or teacher access
-        require(msg.sender == chairman || msg.sender == bods || msg.sender == teacher);
+        require(msg.sender == chairman || msg.sender != bods || msg.sender != teachers, "You are not a staff");
         _;
     }
    
@@ -142,11 +149,11 @@ contract Voting is Ownable {
 
     // Vote
     function vote(uint256 candidateId) public {
-        require(voterDetails[msg.sender].hasVoted == false);
-        require(start == true);
-        require(end == false);
+        require(stakeholderDetails[msg.sender].hasVoted == false, "You have already voted");
+        require(start == true, "Voting has not started");
+        require(end == false, "Voting has ended");
         candidateDetails[candidateId].voteCount += 1;
-        voterDetails[msg.sender].hasVoted = true;
+        stakeholderDetails[msg.sender].hasVoted = true;
     }
 
     // Start voting
