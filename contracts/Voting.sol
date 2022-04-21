@@ -43,8 +43,13 @@ contract Voting is Ownable {
 
     // Modeling a Election Details
     struct ElectionDetails {
-        string electionTitle;
-        string organizationTitle;
+        string name;
+        string electivePosition;
+        Status status;
+        string[] participants;
+    }
+    enum Status{
+        completed, released, delayed, scheduled
     }
 
     ElectionDetails public electionDetails;
@@ -62,8 +67,8 @@ contract Voting is Ownable {
     mapping(uint256  => Candidate) public candidateDetails;
 
     /**
-        * @notice events emitted for front-end
-        */ 
+    * @notice events emitted for front-end
+    */ 
         event TeacherSet(address [] _teachers);
         event TeacherRemoved(address [] _teachers);
         event StudentSet(address [] _students);
@@ -242,27 +247,31 @@ contract Voting is Ownable {
 
 
     function setElectionDetails(
-        string memory _electionTitle,
-        string memory _organizationTitle
+        string memory _name,
+        string memory _electivePosition,
+        Status  _status,
+        string[] memory _participants
     )
         public
         // Only students can not add
         onlyTrustee
     {
         electionDetails = ElectionDetails(
-            _electionTitle,
-            _organizationTitle
+            _name,
+            _electivePosition,
+            _status,
+            _participants
         );
         votingState = false;
     }
 
     
     function getElectionTitle() public view returns (string memory) {
-        return electionDetails.electionTitle;
+        return electionDetails.name;
     }
 
     function getOrganizationTitle() public view returns (string memory) {
-        return electionDetails.organizationTitle;
+        return electionDetails.electivePosition;
     }
 
     // Get candidates count
