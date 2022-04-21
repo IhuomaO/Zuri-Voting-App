@@ -1,10 +1,19 @@
 {
   "name": "zuri-voting-app",
   "version": "1.0.0",
+  "private": true,
   "description": "A DApp that helps an organisation to setup an election for leadership position in its school.",
   "main": "index.js",
+  "workspaces": [
+    "./react-app"
+  ],
   "scripts": {
-    "test": "test"
+    "test": "test",
+    "start": "yarn workspace indigo-voting start",
+    "build": "yarn --cwd react-app build:tailwind",
+    "react-test": "yarn --cwd react-app test",
+    "eject": "npm --prefix react-app eject",
+    "surge": "npm --prefix react-app surge"
   },
   "repository": {
     "type": "git",
