@@ -3,35 +3,36 @@ import { Switch, Route, Redirect } from "react-router-dom";
 
 // components
 
-import Navbar from "components/Navbars/AuthNavbar.js";
-import FooterSmall from "components/Footers/FooterSmall.js";
+import AdminNavbar from "../components/Navbars/AdminNavbar.js";
+import Sidebar from "../components/Sidebar/Sidebar.js";
+import HeaderStats from "../components/Headers/HeaderStats.js";
+import FooterAdmin from "../components/Footers/FooterAdmin.js";
 
 // views
 
-import Login from "views/auth/Login.js";
-import Register from "views/auth/Register.js";
+import Dashboard from "../views/auth/Dashboard";
+import Settings from "../views/auth/Settings.js";
+import Tables from "../views/auth/Tables.js";
 
 export default function Auth() {
   return (
     <>
-      <Navbar transparent />
-      <main>
-        <section className="relative w-full h-full py-40 min-h-screen">
-          <div
-            className="absolute top-0 w-full h-full bg-blueGray-800 bg-no-repeat bg-full"
-            style={{
-              backgroundImage:
-                "url(" + require("assets/img/register_bg_2.png").default + ")",
-            }}
-          ></div>
+      <Sidebar />
+      <div className="relative md:ml-64 bg-blueGray-100">
+        <AdminNavbar />
+        {/* Header */}
+        <HeaderStats />
+
+        <div className="px-4 md:px-10 mx-auto w-full -m-24">
           <Switch>
-            <Route path="/auth/login" exact component={Login} />
-            <Route path="/auth/register" exact component={Register} />
-            <Redirect from="/auth" to="/auth/login" />
+            <Route path="/auth/dashboard" exact component={Dashboard} />
+            <Route path="/auth/settings" exact component={Settings} />
+            <Route path="/auth/results" exact component={Tables} />
+            <Redirect from="/auth" to="/auth/dashboard" />
           </Switch>
-          <FooterSmall absolute />
-        </section>
-      </main>
+          <FooterAdmin />
+        </div>
+      </div>
     </>
   );
 }
