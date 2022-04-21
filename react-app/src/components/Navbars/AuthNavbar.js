@@ -1,11 +1,14 @@
 /*eslint-disable*/
-import React from "react";
+import React, { useState, useContext } from "react";
 import { Link } from "react-router-dom";
+
+import { IndigoVotingContext } from "context/IndigoVotingContext";
 
 // components
 
 export default function Navbar(props) {
   const [navbarOpen, setNavbarOpen] = React.useState(false);
+  const { connectWallet, currentAccount } = useContext(IndigoVotingContext);
   return (
     <>
       <nav className="top-0 absolute z-50 w-full flex flex-wrap items-center justify-between px-2 py-3 navbar-expand-lg">
@@ -77,14 +80,17 @@ export default function Navbar(props) {
                 </a>
               </li>
 
-              <li className="flex items-center">
-                <button
-                  className="bg-white text-blueGray-700 active:bg-blueGray-50 text-xs font-bold uppercase px-4 py-2 rounded shadow hover:shadow-md outline-none focus:outline-none lg:mr-1 lg:mb-0 ml-3 mb-3 ease-linear transition-all duration-150"
-                  type="button"
-                >
-                  <i className="fas fa-lock"></i> Connect
-                </button>
-              </li>
+              {!currentAccount && (
+                <li className="flex items-center">
+                  <button
+                    className="bg-white text-blueGray-700 active:bg-blueGray-50 text-xs font-bold uppercase px-4 py-2 rounded shadow hover:shadow-md outline-none focus:outline-none lg:mr-1 lg:mb-0 ml-3 mb-3 ease-linear transition-all duration-150"
+                    type="button"
+                    onClick={connectWallet}
+                  >
+                    <i className="fas fa-lock"></i> Connect
+                  </button>
+                </li>
+              )}
             </ul>
           </div>
         </div>
