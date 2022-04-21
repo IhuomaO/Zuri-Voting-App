@@ -26,9 +26,9 @@ export default function Auth() {
         <div className="px-4 md:px-10 mx-auto w-full -m-24">
           <Switch>
             <Route path="/auth/dashboard" exact component={Dashboard} />
-            <Route path="/auth/settings" exact component={Settings} />
+            <Route path="/auth//settings" exact component={Settings} />
             <Route path="/auth/results" exact component={Tables} />
-            <Redirect from="/auth" to="/auth/dashboard" />
+            {/* <Redirect from="/auth" to="/auth/dashboard" /> */}
           </Switch>
           <FooterAdmin />
         </div>

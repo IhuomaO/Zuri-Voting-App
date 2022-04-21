@@ -32,36 +32,34 @@ const NotificationDropdown = () => {
         ref={popoverDropdownRef}
         className={
           (dropdownPopoverShow ? "block " : "hidden ") +
-          "bg-white text-base z-50 float-left py-2 list-none text-left rounded shadow-lg min-w-48"
+          "bg-white text-base z-50 py-2 list-none pr-4 text-left rounded shadow-lg min-w-48"
         }
       >
-        <a
-          href="#pablo"
-          className={
-            "text-sm py-2 px-4 font-normal block w-full whitespace-nowrap bg-transparent text-blueGray-700"
-          }
+        <button
+          className="bg-white text-blueGray-700 active:bg-blueGray-50 text-xs font-bold w-full uppercase px-4 py-2 rounded shadow hover:shadow-md outline-none focus:outline-none lg:mr-1 lg:mb-0 ml-3 mb-4 ease-linear transition-all duration-150"
+          type="button"
           onClick={(e) => e.preventDefault()}
         >
-          Action
-        </a>
-        <a
-          href="#pablo"
-          className={
-            "text-sm py-2 px-4 font-normal block w-full whitespace-nowrap bg-transparent text-blueGray-700"
-          }
+          <i className="fas fa-start"></i>
+          Start
+        </button>
+
+        <button
+          className="bg-white text-blueGray-700 active:bg-blueGray-50 text-xs font-bold w-full uppercase px-4 py-2 rounded shadow hover:shadow-md outline-none focus:outline-none lg:mr-1 lg:mb-0 ml-3 mb-4 ease-linear transition-all duration-150 block"
+          type="button"
           onClick={(e) => e.preventDefault()}
         >
-          Another action
-        </a>
-        <a
-          href="#pablo"
-          className={
-            "text-sm py-2 px-4 font-normal block w-full whitespace-nowrap bg-transparent text-blueGray-700"
-          }
+          <i className="fas fa-start"></i>
+          End
+        </button>
+        <button
+          className="bg-white text-blueGray-700 active:bg-blueGray-50 text-xs font-bold w-full uppercase px-4 py-2 rounded shadow hover:shadow-md outline-none focus:outline-none lg:mr-1 lg:mb-0 ml-3 mb-4 ease-linear transition-all duration-150 block"
+          type="button"
           onClick={(e) => e.preventDefault()}
         >
-          Something else here
-        </a>
+          <i className="fas fa-start"></i>
+          Collate
+        </button>
       </div>
     </>
   );
