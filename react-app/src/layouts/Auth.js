@@ -28,7 +28,7 @@ export default function Auth() {
             <Route path="/auth/dashboard" exact component={Dashboard} />
             <Route path="/auth/settings" exact component={Settings} />
             <Route path="/auth/results" exact component={Tables} />
-            <Redirect from="/auth" to="/auth/dashboard" />
+            {/* <Redirect from="/auth" to="/auth/dashboard" /> */}
           </Switch>
           <FooterAdmin />
         </div>

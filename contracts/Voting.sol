@@ -332,4 +332,3 @@ contract Voting is Ownable {
     }
    
 }
-
