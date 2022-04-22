@@ -2,8 +2,6 @@
 pragma solidity ^0.8.0;
 
 import "@openzeppelin/contracts/access/Ownable.sol";
-import "@openzeppelin/contracts/access/AccessControl.sol";
-
 
 contract Voting is Ownable {
     /**Global Variables and arrays
@@ -13,24 +11,14 @@ contract Voting is Ownable {
     address[] public BOD;
     address[] public students;
     address[] public stakeholders;
+    Candidate[] public candidates;
     uint256 candidateCount;
     uint256 voterCount;
     bool votingState;
+    bool released;
+    bool paused;
    
 
-    constructor() {
-        // Initilizing default values
-        candidateCount = 0;
-        voterCount = 0;
-        votingState = false;
-    }
-
-    // Modeling a stakeholder
-    struct Stakeholder {
-        address stakeholderAddress;
-        string role;
-        bool hasVoted;
-    }
 
      // Modeling a candidate
     struct Candidate {
@@ -45,11 +33,6 @@ contract Voting is Ownable {
     struct ElectionDetails {
         string name;
         string electivePosition;
-        Status status;
-        string[] participants;
-    }
-    enum Status{
-        completed, released, delayed, scheduled
     }
 
     ElectionDetails public electionDetails;
@@ -60,9 +43,9 @@ contract Voting is Ownable {
     mapping (address=>bool) public isTeacher;
     mapping (address=>bool) public isBODMember;
     mapping (address=>bool) public isStudent;
-    mapping (address=>bool) public isStakeHolder;
+    mapping (address=>bool) public isStakeHolder; 
+    mapping(address => bool) public hasVoted;
 
-    mapping(address => Stakeholder) public stakeholderDetails;
 
     mapping(uint256  => Candidate) public candidateDetails;
 
@@ -84,6 +67,24 @@ contract Voting is Ownable {
         modifier onlyChairman {
             // Modifier for only chairman access
             require(msg.sender == chairman,"You're not the Chairman!");
+            _;
+        }
+    /**
+    @notice Modifier to release results
+    */ 
+
+        modifier onlyWhenReleased {
+            // Modifier for only chairman access
+            require(released, "Results not released yet");
+            _;
+        }
+    /**
+    @notice Modifier to release results
+    */ 
+
+        modifier NotPaused {
+            // Modifier for only chairman access
+            require(paused == false, "Contract is Paused");
             _;
         }
     /**
@@ -117,9 +118,10 @@ contract Voting is Ownable {
         @notice A method to set an address(es) as a Teacher(s)
         @param _teachers addresses to set as Teachers.
         */
-        function setTeacher(address [] memory _teachers) public onlyChairman {
+        function setTeacher(address [] memory _teachers) public onlyChairman NotPaused {
             require(_teachers.length <= 50, "Can only set a max of 50 teachers at a time");
             for(uint i = 0; i < _teachers.length; i++) {
+                require(isTeacher[_teachers[i]] == false);
                 teachers.push(_teachers[i]);
                 stakeholders.push(_teachers[i]);
                 isTeacher[_teachers[i]]= true;
@@ -131,7 +133,7 @@ contract Voting is Ownable {
         @notice A method to remove an address(es) as a Teacher(s)
         @param _teachers addresses to remove as Teachers.
         */
-        function removeTeacher(address [] memory _teachers) public onlyChairman {
+        function removeTeacher(address [] memory _teachers) public onlyChairman NotPaused {
             require(_teachers.length <= 50, "Can only remove a max of 50 teachers at a time");
             for(uint i = 0; i < _teachers.length; i++) {
             uint index = find(_teachers[i], teachers);
@@ -149,9 +151,10 @@ contract Voting is Ownable {
         @notice A method to set an address(es) as a Student(s)
         @param _students addresses to set as Teachers.
         */
-        function setStudent(address [] memory _students) public onlyChairman {
+        function setStudent(address [] memory _students) public onlyChairman NotPaused{
             require(_students.length <= 50, "Can only set a max of 50 students at a time");
             for(uint i = 0; i < _students.length; i++) {
+                 require(isStudent[_students[i]] == false);
                 students.push(_students[i]);
                 stakeholders.push(_students[i]);
                 isStudent[_students[i]]= true;
@@ -163,7 +166,7 @@ contract Voting is Ownable {
         @notice A method to remove an address(es) as a student(s)
         @param _students addresses to remove as students.
         */
-        function removeStudent(address [] memory _students) public onlyChairman {
+        function removeStudent(address [] memory _students) public onlyChairman NotPaused{
             require(_students.length <= 50, "Can only remove a max of 50 students at a time");
             for(uint i = 0; i < _students.length; i++) {
             uint index = find(_students[i], students);
@@ -182,9 +185,10 @@ contract Voting is Ownable {
         @notice A method to set an address(es) as a BOD(s)
         @param _BOD addresses to set as BODs.
         */
-        function setBOD(address [] memory _BOD) public onlyChairman {
+        function setBOD(address [] memory _BOD) public onlyChairman NotPaused {
             require(_BOD.length <= 50, "Can only set a max of 50 members of the Board of Directors at a time");
             for(uint i = 0; i < _BOD.length; i++) {
+                 require(isBODMember[_BOD[i]] == false);
                 BOD.push(_BOD[i]);
                 stakeholders.push(_BOD[i]);
                 isBODMember[_BOD[i]]= true;
@@ -196,7 +200,7 @@ contract Voting is Ownable {
         @notice A method to remove an address(es) as a BOD(s)
         @param _BOD addresses to remove as BODs.
         */
-        function removeBOD(address [] memory _BOD) public onlyChairman {
+        function removeBOD(address [] memory _BOD) public onlyChairman NotPaused{
             require(_BOD.length <= 50, "Can only remove a max of 50 BODs at a time");
             for(uint i = 0; i < _BOD.length; i++) {
             uint index = find(_BOD[i], BOD);
@@ -225,6 +229,23 @@ contract Voting is Ownable {
             }
             return i;
         }
+//Method to release results
+    function ReleaseResults() public onlyChairman NotPaused{
+        released = true;
+    }
+    //Pause contract function
+    function PauseContract() public onlyOwner {
+        paused = true;
+    }
+    //Unpuase Contract
+    function PlayContract() public onlyOwner {
+        paused = false;
+    }
+
+
+
+
+
 
 
     // Adding new candidates
@@ -232,6 +253,7 @@ contract Voting is Ownable {
         public
         // Only students can not can add
         onlyTrustee
+        NotPaused
     {
         Candidate memory newCandidate =
             Candidate({
@@ -242,27 +264,23 @@ contract Voting is Ownable {
                 voteCount: 0
             });
         candidateDetails[candidateCount] = newCandidate;
+        candidates.push(newCandidate);
         candidateCount += 1;
     }
 
 
     function setElectionDetails(
         string memory _name,
-        string memory _electivePosition,
-        Status  _status,
-        string[] memory _participants
+        string memory _electivePosition
     )
         public
-        // Only students can not add
-        onlyTrustee
+        onlyTrustee // Only students can not add
+        NotPaused
     {
         electionDetails = ElectionDetails(
             _name,
-            _electivePosition,
-            _status,
-            _participants
+            _electivePosition
         );
-        votingState = false;
     }
 
     
@@ -270,7 +288,7 @@ contract Voting is Ownable {
         return electionDetails.name;
     }
 
-    function getOrganizationTitle() public view returns (string memory) {
+    function getElectionPosition() public view returns (string memory) {
         return electionDetails.electivePosition;
     }
 
@@ -287,11 +305,12 @@ contract Voting is Ownable {
     }
 
     // Vote
-    function vote(uint256 candidateId) public {
-        require(stakeholderDetails[msg.sender].hasVoted == false, "You have already voted");
-        require(votingState == true, "Voting has not started");
-        candidateDetails[candidateId].voteCount += 1;
-        stakeholderDetails[msg.sender].hasVoted = true;
+    function vote(uint256 candidateId) public onlyStakeHolder VotingActive {
+        require(hasVoted[msg.sender] == false, "You have already voted");
+        hasVoted[msg.sender] = true;
+        candidateDetails[candidateId].voteCount++;
+        candidates[candidateId].voteCount++;
+
     }
 
     // Start voting
@@ -304,5 +323,36 @@ contract Voting is Ownable {
         votingState = false;
     }
 
+  function CurrentWinner() public view onlyTrustee
+            returns (string memory)
+    {
+        Candidate memory winningCandidate;
+        uint winningVoteCount = 0;
+        for (uint i = 0; i < candidates.length; i++) {
+            if (candidates[i].voteCount > winningVoteCount) {
+                winningCandidate = candidates[i];
+            }
+        }
+    return winningCandidate.header;
+    }
    
 }
+
+
+
+//   /** 
+//      * @dev Computes the winning proposal taking all previous votes into account.
+//      * @return winningCandida
+//      */
+  
+
+//     /** 
+//      * @dev Calls winningProposal() function to get the index of the winner contained in the proposals array and then
+//      * @return winnerName_ the name of the winner
+//      */
+//     function winnerName() public view
+//             returns (bytes32 winnerName_)
+//     {
+//         winnerName_ = proposals[winningProposal()].name;
+//     }
+// }
