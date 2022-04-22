@@ -13,7 +13,7 @@ import FooterAdmin from "../components/Footers/FooterAdmin.js";
 import Dashboard from "../views/auth/Dashboard";
 import Settings from "../views/auth/Settings.js";
 import Tables from "../views/auth/Tables.js";
-import AdminResponsibilities from "views/auth/AdminResponsibilities.js";
+// import AdminResponsibilities from "views/auth/AdminResponsibilities.js";
 // import Maps from "../views/auth/Maps.js";
 
 export default function Auth() {
@@ -31,7 +31,7 @@ export default function Auth() {
             <Route path="/auth/settings" exact component={Settings} />
             <Route path="/auth/results" exact component={Tables} />
 
-            <Route path="/auth/admin" exact component={AdminResponsibilities} />
+            {/* <Route path="/auth/admin" exact component={AdminResponsibilities} /> */}
             {/* <Route path="/auth/maps" exact component={Maps} /> */}
             <Redirect from="/auth" to="/auth/dashboard" />
           </Switch>

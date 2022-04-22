@@ -27,7 +27,7 @@ const getEthereumContract = () => {
 
 export const IndigoVotingProvider = ({ children }) => {
   const [currentAccount, setCurrentAccount] = useState("");
-  const history = useHistory();
+  // const history = useHistory();
   const chechIfWalletIsConnected = async () => {
     try {
       if (!ethereum) return toast.warning("Please install metamask");
@@ -42,7 +42,7 @@ export const IndigoVotingProvider = ({ children }) => {
     }
   };
 
-  const connectWallet = async () => {
+  const connectWallet = async (history) => {
     try {
       if (!ethereum) return toast.warning("Please install metamask");
       const accounts = await ethereum.request({

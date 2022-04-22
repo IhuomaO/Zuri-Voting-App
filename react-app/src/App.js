@@ -5,7 +5,7 @@ import "assets/styles/tailwind.css";
 import Landing from "views/Landing";
 import Auth from "layouts/Auth";
 import { IndigoVotingProvider } from "context/IndigoVotingContext";
-import PrivateRoute from "routing/PrivateRoute";
+// import PrivateRoute from "routing/PrivateRoute";
 
 function App() {
   return (
@@ -13,7 +13,7 @@ function App() {
       <BrowserRouter>
         <IndigoVotingProvider>
           <Switch>
-            <PrivateRoute path="/auth" component={Auth} />
+            <Route path="/auth" component={Auth} />
             <Route exact path="/" component={Landing} />
 
             {/* <Redirect from="*" to="/" /> */}
