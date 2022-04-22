@@ -30,7 +30,7 @@ export default function FooterAdmin() {
                 </li>
                 <li>
                   <a
-                    href="#"
+                    href="https://github.com/IhuomaO/Zuri-Voting-App"
                     className="text-blueGray-600 hover:text-blueGray-800 text-sm font-semibold block py-1 px-3"
                   >
                     About Us
@@ -38,7 +38,7 @@ export default function FooterAdmin() {
                 </li>
                 <li>
                   <a
-                    href="#"
+                    href="https://github.com/IhuomaO/Zuri-Voting-App"
                     className="text-blueGray-600 hover:text-blueGray-800 text-sm font-semibold block py-1 px-3"
                   >
                     Blog
@@ -46,7 +46,7 @@ export default function FooterAdmin() {
                 </li>
                 <li>
                   <a
-                    href="#"
+                    href="https://github.com/IhuomaO/Zuri-Voting-App"
                     className="text-blueGray-600 hover:text-blueGray-800 text-sm font-semibold block py-1 px-3"
                   >
                     MIT License
