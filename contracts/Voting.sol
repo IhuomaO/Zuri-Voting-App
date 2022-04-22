@@ -318,7 +318,7 @@ contract Voting is Ownable {
         votingState = false;
     }
 
-  function CurrentWinner() public view onlyTrustee
+  function compileResult() public view onlyTrustee
             returns (string memory)
     {
         Candidate memory winningCandidate;
@@ -330,5 +330,5 @@ contract Voting is Ownable {
         }
     return winningCandidate.name;
     }
-   
+  
 }

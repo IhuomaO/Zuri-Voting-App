@@ -1,158 +1,119 @@
-const { expect } = require("chai");
-const { ethers } = require("hardhat");
+const hre = require("hardhat");
+const { ethers } = hre;
+const { use, expect } = require("chai");
+const { solidity } = require("ethereum-waffle");
+
+use(solidity);
 
 
-describe("Voting", (accounts) => {
+describe("Voting 🤖", (accounts) => {
+    let voting;
+    let owner, admin, chairman, student, teacher, addr1, addr2, addr3, addrs;
 
-  it('creates 2 candidates via submission before votes can be accepted', async function () {
-    
-    const Voting = await ethers.getContractFactory("Voting");
-    const voting = await Voting.deploy();
-    await voting.deployed();
+    beforeEach(async function () {
+        // create the smart contract object to test from
+        [owner,admin, chairman, teacher, student, addr1, addr2, addr3, ...addrs] = await ethers.getSigners();
+        const Voting = await ethers.getContractFactory("Voting");
+        voting = await Voting.deploy();
+        admin = await voting.owner();
+    });
 
-    expect(await voting.addCandidate('Candidate 1', 'democrat')).to.equal("Hello, world!")
-      .then(() => instance.vote(1, {
-        from: accounts[0]
-      }))
-      .catch((err) => {
-        assert.include(err.message, 'Must be at least 2 candidates before votes can be cast');
-        return instance.addCandidate('Candidate 2', 'republican')
-          .then(() => instance.candidates())
-          .then(count => assert.equal(count, 2))
-      });
-
-  });
-
-
-  it('it initializes the candidates with the correct values', async function () {
-    const Voting = await ethers.getContractFactory("Voting");
-    const voting = await Voting.deploy();
-    await voting.deployed()
-      .then((instance) => {
-        electionInstance = instance;
-        return electionInstance.candidates(1);
-      })
-      .then((candidate) => {
-        assert.equal(candidate[0], 1, 'contains the correct id');
-        assert.equal(candidate[1], 'Candidate 1', 'contains the correct name');
-        assert.equal(candidate[2], 0, 'contains the correct votes count');
-        assert.equal(candidate[3], 'democrat', 'contains the right party');
-        return electionInstance.candidates(2);
-      })
-      .then((candidate) => {
-        assert.equal(candidate[0], 2, 'contains the correct id');
-        assert.equal(candidate[1], 'Candidate 2', 'contains the correct name');
-        assert.equal(candidate[2], 0, 'contains the correct votes count');
-        assert.equal(candidate[3], 'republican', 'contains the right party');
-      });
-  });
-
-  it('increments the vote count properly and adds address to voted map', async function () {
-    let candidate;
-    let electionInstance;
-
-    const Voting = await ethers.getContractFactory("Voting");
-    const voting = await Voting.deploy();
-    await voting.deployed()
-      .then((instance) => {
-        electionInstance = instance;
-        candidate = 1;
-        return electionInstance.vote(candidate, {
-          from: accounts[0]
+    describe("Deployment", function () {
+        it("Should set the right owner", async function () {
+            expect(await voting.owner()).to.equal(owner.address);
         });
-      })
-      .then((vote) => {
-        assert.isDefined(vote.tx, 'successfully generated vote tx id');
-        return electionInstance.candidates(candidate);
-      })
-      .then((candidate) => {
-        assert.equal(candidate[2], 1, 'added vote to candidate array');
-        return electionInstance.voters(accounts[0]);
-      })
-      .then((voters) => {
-        assert.isTrue(voters, 'address added to voters mapping');
-      })
-      .then(() => {
-        return electionInstance.vote(candidate + 1, {
-          from: accounts[0]
-        });
-      })
-      .catch((err) => {
-        assert.include(err.message, 'Vote already cast from this address', 'error if address votes twice');
-      });
-  });
 
-  it('prevents candidate from being added after first vote cast', async function () {
-    let instance;
-    const Voting = await ethers.getContractFactory("Voting");
-    const voting = await Voting.deploy();
-    await voting.deployed()
-      .then((Instance) => {
-        instance = Instance;
-        return instance.voteTotal();
-      })
-      .then((total) => {
-        assert.equal(total, 1, 'total votes incremented for each prev vote');
-        return instance.addCandidate('TestCand3', 'dem');
-      })
-      .catch((err) => {
-        assert.include(err.message, 'Cannot submit candidate after first vote recorded');
-      });
-  })
+    });
 
-  it('throws exception if address tries to vote twice', async function () {
-    const Voting = await ethers.getContractFactory("Voting");
-    const voting = await Voting.deploy();
-    await voting.deployed()
-      .then((instance) => {
-        let candidate = 1
-        instance.vote(candidate, {
-          from: accounts[1]
-        });
-        return instance.vote(candidate, {
-          from: accounts[1]
-        });
-      })
-      .catch((err) => {
-        assert.include(err.message, 'Vote already cast from this address', 'error if address votes twice');
-      });
-  });
+    describe("Admin", function () {
+    //   beforeEach(async function () {
+    //       // create the smart contract object to test from
+    //       admin = await voting.owner();
+    // });
 
-  it('throws an exception for invalid candidates', async function () {
-    const Voting = await ethers.getContractFactory("Voting");
-    const voting = await Voting.deploy();
-    await voting.deployed()
-      .then((instance) => {
-        return instance.vote(99, {
-          from: accounts[2]
-        });
-      })
-      .catch((err) => {
-        assert.include(err.message, 'Candidate ID is not in range of candidates', 'error if selecting non existing candidate id');
+      it("Should set chairman", async function () {
+          Chairman =  voting.connect(admin).setChairman(chairman.address);
+          // Expect the function to go through
+          const txResult = await Chairman.wait();
+          expect(txResult.status).to.equal(1);
       });
-  });
 
-  it('allows a voter to cast a vote', async function () {
-    const Voting = await ethers.getContractFactory("Voting");
-    const voting = await Voting.deploy();
-    await voting.deployed()
-      .then((instance) => {
-        electionInstance = instance;
-        candidateId = 2;
-        return electionInstance.vote(candidateId, {
-          from: accounts[3]
-        });
-      })
-      .then((receipt) => {
-        assert.equal(receipt.logs[0].event, 'votedEvent', 'the event type is correct');
-        assert.equal(receipt.logs[0].args.indexed_candidateId.toNumber(), candidateId, 'the candidate id is correct');
-        return electionInstance.voters(accounts[3]);
-      }).then((voted) => {
-        assert(voted, 'the voter was marked as voted');
-        return electionInstance.candidates(candidateId);
-      }).then((candidate) => {
-        assert.equal(candidate[2], 1, "increments the candidate's vote count");
-      });
-  });
+
+    })
+
+    describe("Chairman", function () {
+    beforeEach(async function () {
+        // create the smart contract object to test from
+        chairman =  voting.connect(admin).setChairman(chairman.address);
+    });
+
+    it("Should be able to add teachers", async function () {
+        const addressList = [teacher.address];
+        contractFunction = await voting.connect(chairman).setTeacher(addressList);
+        // Expect the function to go through
+        const txResult = await contractFunction.wait();
+        expect(txResult.status).to.equal(1);
+    });
+
+    it("should be able to add students", async function () {
+        const addressList = [student.address];
+        contractFunction = await voting.connect(chairman).setStudent(addressList);
+        // Expect the function to go through
+        const txResult = await contractFunction.wait();
+        expect(txResult.status).to.equal(1);
+    });
+
+    it("Should set voting status", async function () {
+        
+
+        votingStatus = await voting.connect(chairman).startElection();
+        // Expect the function to go through
+        const txResult = await votingStatus.wait();
+        expect(txResult.status).to.equal(1);
+    });
+
+    it("voting status should change", async function () {
+        votingStatus = await voting.connect(chairman).endElection();
+        // Expect the function to go through
+        const status = await voting.connect(chairman).votingState;
+        expect(status).to.equal(false);
+    });
+
+    it("should be able to create election", async function () {
+
+        votingStatus = await voting.connect(chairman).addCandidate( addr3, "Buhari");
+        // Expect the function to go through
+        const txResult = await votingStatus.wait();
+        expect(txResult.status).to.equal(1);
+    });
+
+    it("should be able to get candidate data", async function () {
+        // create ballot
+        await voting.connect(chairman).addCandidate( addr3, "Buhari");
+        
+        
+        // Expect the function to go through
+        votingStatus = await voting.connect(chairman).candidateDetails(0);
+        expect(votingStatus.id).to.equal(0);
+    });
+
+    it("should be able to vote", async function () {
+        // create ballot
+        await voting.connect(chairman).addCandidate( addr1, "Goodluck");
+        votingStatus = await voting.connect(chairman).startElection();
+        
+        // Expect the function to go through
+        votingStatus = await voting.connect(chairman).vote(0);
+        const txResult = await votingStatus.wait();
+        expect(txResult.status).to.equal(1);
+    });
+
+
+    })
+
 
 });
+
+// //
+// // this script executes when you run 'yarn test'
+
