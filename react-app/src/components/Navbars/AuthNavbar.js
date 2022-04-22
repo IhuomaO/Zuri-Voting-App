@@ -7,8 +7,12 @@ import { IndigoVotingContext } from "context/IndigoVotingContext";
 // components
 
 export default function Navbar(props) {
-  const [navbarOpen, setNavbarOpen] = React.useState(false);
-  const { connectWallet, currentAccount } = useContext(IndigoVotingContext);
+  const [navbarOpen, setNavbarOpen] = useState(false);
+  const { connectWallet, currentAccount } = useContext(IndigoVotingContext)
+
+  const openDashboard = () => {
+    window.open('./auth/dashboard', '_self')
+  }
   return (
     <>
       <nav className="top-0 absolute z-50 w-full flex flex-wrap items-center justify-between px-2 py-3 navbar-expand-lg">
@@ -80,17 +84,15 @@ export default function Navbar(props) {
                 </a>
               </li>
 
-              {!currentAccount && (
-                <li className="flex items-center">
-                  <button
-                    className="bg-white text-blueGray-700 active:bg-blueGray-50 text-xs font-bold uppercase px-4 py-2 rounded shadow hover:shadow-md outline-none focus:outline-none lg:mr-1 lg:mb-0 ml-3 mb-3 ease-linear transition-all duration-150"
-                    type="button"
-                    onClick={connectWallet}
-                  >
-                    <i className="fas fa-lock"></i> Connect
-                  </button>
-                </li>
-              )}
+              <li className="flex items-center">
+                <button
+                  className="bg-white text-blueGray-700 active:bg-blueGray-50 text-xs font-bold uppercase px-4 py-2 rounded shadow hover:shadow-md outline-none focus:outline-none lg:mr-1 lg:mb-0 ml-3 mb-3 ease-linear transition-all duration-150 cursor-pointer"
+                  type="button"
+                  onClick={currentAccount ? openDashboard : connectWallet}
+                >
+                  <i className="fas fa-lock"></i> {currentAccount ? 'Open Dashboard' : 'Connect'}
+                </button>
+              </li>
             </ul>
           </div>
         </div>
