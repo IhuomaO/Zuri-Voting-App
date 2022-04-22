@@ -1,15 +1,16 @@
-let Voting = artifacts.require('./Voting.sol');
+const { expect } = require("chai");
+const { ethers } = require("hardhat");
 
-contract('Voting', (accounts) => {
-  let electionInstance;
 
-  it('creates candidates via submission and makes sure at least 2 beforea accept votes', function () {
-    let instance;
-    return Election.deployed()
-      .then((Instance) => {
-        instance = Instance;
-        return instance.addCandidate('Candidate 1', 'democrat');
-      })
+describe("Voting", (accounts) => {
+
+  it('creates 2 candidates via submission before votes can be accepted', async function () {
+    
+    const Voting = await ethers.getContractFactory("Voting");
+    const voting = await Voting.deploy();
+    await voting.deployed();
+
+    expect(await voting.addCandidate('Candidate 1', 'democrat')).to.equal("Hello, world!")
       .then(() => instance.vote(1, {
         from: accounts[0]
       }))
@@ -23,8 +24,10 @@ contract('Voting', (accounts) => {
   });
 
 
-  it('it initializes the candidates with the correct values', () => {
-    return Election.deployed()
+  it('it initializes the candidates with the correct values', async function () {
+    const Voting = await ethers.getContractFactory("Voting");
+    const voting = await Voting.deploy();
+    await voting.deployed()
       .then((instance) => {
         electionInstance = instance;
         return electionInstance.candidates(1);
@@ -44,11 +47,13 @@ contract('Voting', (accounts) => {
       });
   });
 
-  it('increments the vote count properly and adds address to voted map', () => {
+  it('increments the vote count properly and adds address to voted map', async function () {
     let candidate;
     let electionInstance;
 
-    return Election.deployed()
+    const Voting = await ethers.getContractFactory("Voting");
+    const voting = await Voting.deploy();
+    await voting.deployed()
       .then((instance) => {
         electionInstance = instance;
         candidate = 1;
@@ -77,9 +82,11 @@ contract('Voting', (accounts) => {
       });
   });
 
-  it('prevents candidate from being added after first vote cast', () => {
+  it('prevents candidate from being added after first vote cast', async function () {
     let instance;
-    return Election.deployed()
+    const Voting = await ethers.getContractFactory("Voting");
+    const voting = await Voting.deploy();
+    await voting.deployed()
       .then((Instance) => {
         instance = Instance;
         return instance.voteTotal();
@@ -93,8 +100,10 @@ contract('Voting', (accounts) => {
       });
   })
 
-  it('throws exception if address tries to vote twice', () => {
-    return Election.deployed()
+  it('throws exception if address tries to vote twice', async function () {
+    const Voting = await ethers.getContractFactory("Voting");
+    const voting = await Voting.deploy();
+    await voting.deployed()
       .then((instance) => {
         let candidate = 1
         instance.vote(candidate, {
@@ -109,8 +118,10 @@ contract('Voting', (accounts) => {
       });
   });
 
-  it('throws an exception for invalid candidates', () => {
-    return Election.deployed()
+  it('throws an exception for invalid candidates', async function () {
+    const Voting = await ethers.getContractFactory("Voting");
+    const voting = await Voting.deploy();
+    await voting.deployed()
       .then((instance) => {
         return instance.vote(99, {
           from: accounts[2]
@@ -121,8 +132,10 @@ contract('Voting', (accounts) => {
       });
   });
 
-  it('allows a voter to cast a vote', () => {
-    return Election.deployed()
+  it('allows a voter to cast a vote', async function () {
+    const Voting = await ethers.getContractFactory("Voting");
+    const voting = await Voting.deploy();
+    await voting.deployed()
       .then((instance) => {
         electionInstance = instance;
         candidateId = 2;
