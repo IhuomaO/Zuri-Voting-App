@@ -15,11 +15,8 @@ export default function HeaderStats() {
             <div className="flex flex-wrap">
               <div className="w-full lg:w-6/12 xl:w-3/12 px-4">
                 <CardStats
-                  statSubtitle="TRAFFIC"
-                  statTitle="350,897"
-                  statArrow="up"
-                  statPercent="3.48"
-                  statPercentColor="text-emerald-500"
+                  statSubtitle="ALL USERS"
+                  statTitle="350"
                   statDescripiron="Since last month"
                   statIconName="far fa-chart-bar"
                   statIconColor="bg-red-500"
@@ -27,37 +24,28 @@ export default function HeaderStats() {
               </div>
               <div className="w-full lg:w-6/12 xl:w-3/12 px-4">
                 <CardStats
-                  statSubtitle="NEW USERS"
-                  statTitle="2,356"
-                  statArrow="down"
-                  statPercent="3.48"
-                  statPercentColor="text-red-500"
+                  statSubtitle="STUDENTS"
+                  statTitle="310"
                   statDescripiron="Since last week"
-                  statIconName="fas fa-chart-pie"
+                  statIconName="fas fa-user"
                   statIconColor="bg-orange-500"
                 />
               </div>
               <div className="w-full lg:w-6/12 xl:w-3/12 px-4">
                 <CardStats
-                  statSubtitle="SALES"
-                  statTitle="924"
-                  statArrow="down"
-                  statPercent="1.10"
-                  statPercentColor="text-orange-500"
+                  statSubtitle="TEACHERS"
+                  statTitle="32"
                   statDescripiron="Since yesterday"
-                  statIconName="fas fa-users"
+                  statIconName="fas fa-chalkboard-teacher"
                   statIconColor="bg-pink-500"
                 />
               </div>
               <div className="w-full lg:w-6/12 xl:w-3/12 px-4">
                 <CardStats
-                  statSubtitle="PERFORMANCE"
-                  statTitle="49,65%"
-                  statArrow="up"
-                  statPercent="12"
-                  statPercentColor="text-emerald-500"
+                  statSubtitle="BOARD OF DIRECTORS"
+                  statTitle="8"
                   statDescripiron="Since last month"
-                  statIconName="fas fa-percent"
+                  statIconName="fas fa-users"
                   statIconColor="bg-lightBlue-500"
                 />
               </div>
