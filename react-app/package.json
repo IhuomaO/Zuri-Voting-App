@@ -15,6 +15,7 @@
     "gulp": "4.0.2",
     "gulp-append-prepend": "1.0.8",
     "ipfs-http-client": "^56.0.2",
+    "papaparse": "^5.3.2",
     "postcss": "8.2.8",
     "react": "17.0.1",
     "react-dom": "17.0.1",

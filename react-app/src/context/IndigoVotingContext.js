@@ -22,6 +22,7 @@ const getEthereumContract = () => {
   );
 
   console.log({ provider, signer, indigoVotingContract });
+  return indigoVotingContract;
 };
 
 export const IndigoVotingProvider = ({ children }) => {
