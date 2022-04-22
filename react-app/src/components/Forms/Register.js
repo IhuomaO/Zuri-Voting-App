@@ -1,15 +1,42 @@
 import React from "react";
-import useForm from "Hooks/useForm";
+import { useState } from "react";
+import { contract } from "context/IndigoVotingContext";
+// import useForm from "Hooks/useForm";
 
 function Register() {
-  const initialState = {
-    position: "",
-    aspirants: [],
-    category: "",
-    status: "",
-  };
+  const [onChange, setElectionChange] = useState({})
+  const [candidateChange, setCandidateChange] = useState({})
 
-  const { onChange, values, setValues } = useForm(initialState);
+
+  const handleElectionChange = (e) => {
+    console.log(e);
+    let { name, value, form } = e.target
+    e.preventDefault();
+    if (form.name === 'create-candidate') {
+      setCandidateChange((prev) => ({ ...prev, [name]: value }))
+    } else {
+      if (name === 'participants') value = value.replace(/ /g, '').split(',')
+      setElectionChange((prev) => ({ ...prev, [name]: value }))
+    }
+  }
+
+  const submitElectionChange = async (e) => {
+    e.preventDefault();
+    try {
+      if (e.target.name === 'create-candidate') {
+        const res = await contract.addCandidate(candidateChange)
+        console.log(res);
+      } else {
+        const res = await contract.setElectionDetails()
+        console.log(res);
+      }
+
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
+
   return (
     <div className="relative flex flex-col min-w-0 break-words bg-white w-full mb-6 shadow-lg rounded">
       <div className="rounded-t mb-0 px-4 py-3 border-0">
@@ -88,7 +115,7 @@ function Register() {
                 value={values.aspirants}
               >
                 <option selected>Choose aspirants</option>
-                {}
+                { }
               </select>
             </div>
             <div className="relative w-full mb-3">

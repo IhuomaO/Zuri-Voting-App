@@ -15,15 +15,16 @@ const getEthereumContract = () => {
   const provider = new ethers.providers.Web3Provider(ethereum);
   const signer = provider.getSigner();
   console.log(contractABI);
-  const indigoVotingContract = new ethers.Contract(
+  const contract = new ethers.Contract(
     contractAddress,
     contractABI,
     signer
   );
 
-  console.log({ provider, signer, indigoVotingContract });
-  return indigoVotingContract;
+  console.log({ provider, signer, contract });
+  return contract;
 };
+export const contract = getEthereumContract()
 
 export const IndigoVotingProvider = ({ children }) => {
   const [currentAccount, setCurrentAccount] = useState("");
@@ -63,7 +64,7 @@ export const IndigoVotingProvider = ({ children }) => {
 
   return (
     <IndigoVotingContext.Provider
-      value={{ connectWallet, currentAccount, contractValue }}
+      value={{ connectWallet, currentAccount, contractValue, contract }}
     >
       {children}
     </IndigoVotingContext.Provider>

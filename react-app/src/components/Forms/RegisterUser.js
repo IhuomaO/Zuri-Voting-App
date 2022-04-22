@@ -2,13 +2,7 @@ import useForm from "Hooks/useForm";
 import React from "react";
 
 function RegisterUser() {
-  const initialState = {
-    userName: "",
-    optionType: "",
-    csv: [],
-    address: "",
-  };
-  const { values, onChange, setValues } = useForm(initialState);
+
 
   const handleSubmit = async (e) => {
     e.preventDefault();
