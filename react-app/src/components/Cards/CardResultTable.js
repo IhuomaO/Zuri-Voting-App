@@ -3,8 +3,6 @@ import PropTypes from "prop-types";
 
 // components
 
-import TableDropdown from "components/Dropdowns/TableDropdown.js";
-
 export default function CardResultTable({ color }) {
   return (
     <>
@@ -73,15 +71,6 @@ export default function CardResultTable({ color }) {
                 >
                   Winner
                 </th>
-
-                <th
-                  className={
-                    "px-6 align-middle border border-solid py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left " +
-                    (color === "light"
-                      ? "bg-blueGray-50 text-blueGray-500 border-blueGray-100"
-                      : "bg-lightBlue-800 text-lightBlue-300 border-lightBlue-700")
-                  }
-                ></th>
               </tr>
             </thead>
             <tbody>
@@ -119,10 +108,6 @@ export default function CardResultTable({ color }) {
                       Wangudo
                     </td>
                   </div>
-                </td>
-
-                <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4 text-right">
-                  <TableDropdown />
                 </td>
               </tr>
             </tbody>
