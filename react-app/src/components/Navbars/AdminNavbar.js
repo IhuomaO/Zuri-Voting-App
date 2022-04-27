@@ -1,8 +1,16 @@
-import React from "react";
+import React, { useEffect } from "react";
 
 import UserDropdown from "components/Dropdowns/UserDropdown.js";
+import { useStoreContext } from "context/IndigoVotingContext";
+import { Redirect } from "react-router-dom";
 
 export default function Navbar() {
+
+  const { store } = useStoreContext()
+  const { connectWallet, currentAccount } = store
+
+
+
   return (
     <>
       {/* Navbar */}
@@ -35,6 +43,13 @@ export default function Navbar() {
           </ul>
         </div>
       </nav>
+      {
+        useEffect(() => {
+          if (!currentAccount) return <Redirect to='/' />
+        }, [currentAccount])
+
+      }
+
       {/* End Navbar */}
     </>
   );

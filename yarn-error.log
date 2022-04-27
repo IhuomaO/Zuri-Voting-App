@@ -2,7 +2,7 @@ Arguments:
   C:\Program Files\nodejs\node.exe C:\Users\udodi\AppData\Roaming\npm\node_modules\yarn\bin\yarn.js workspace indigo-voting start
 
 PATH: 
-  C:\Users\udodi\AppData\Local\Temp\yarn--1650547487060-0.8665342784093717;C:\Users\udodi\Documents\Kainy\zuri\game-phase\Zuri-Voting-App\node_modules\.bin;C:\Users\udodi\AppData\Local\Yarn\Data\link\node_modules\.bin;C:\Users\udodi\Documents\Kainy\zuri\game-phase\Zuri-Voting-App\node_modules\.bin;C:\Users\udodi\AppData\Local\Yarn\bin;C:\Program Files\libexec\lib\node_modules\npm\bin\node-gyp-bin;C:\Program Files\lib\node_modules\npm\bin\node-gyp-bin;C:\Program Files\nodejs\node_modules\npm\bin\node-gyp-bin;C:\windows\system32;C:\windows;C:\windows\System32\Wbem;C:\windows\System32\WindowsPowerShell\v1.0\;C:\windows\System32\OpenSSH\;C:\Program Files\nodejs\;C:\Program Files\Microsoft VS Code\bin;C:\Program Files\Git\cmd;C:\Users\udodi\AppData\Local\Microsoft\WindowsApps;C:\Users\udodi\AppData\Roaming\npm
+  C:\Users\udodi\Documents\Kainy\zuri\game-phase\Zuri-Voting-App\node_modules\.bin;C:\Users\udodi\Documents\Kainy\zuri\game-phase\node_modules\.bin;C:\Users\udodi\Documents\Kainy\zuri\node_modules\.bin;C:\Users\udodi\Documents\Kainy\node_modules\.bin;C:\Users\udodi\Documents\node_modules\.bin;C:\Users\udodi\node_modules\.bin;C:\Users\node_modules\.bin;C:\node_modules\.bin;C:\Program Files\nodejs\node_modules\npm\node_modules\@npmcli\run-script\lib\node-gyp-bin;C:\windows\system32;C:\windows;C:\windows\System32\Wbem;C:\windows\System32\WindowsPowerShell\v1.0\;C:\windows\System32\OpenSSH\;C:\Program Files\nodejs\;C:\Program Files\Microsoft VS Code\bin;C:\Program Files\Git\cmd;C:\Users\udodi\AppData\Local\Microsoft\WindowsApps;C:\Users\udodi\AppData\Roaming\npm
 
 Yarn version: 
   1.22.17
@@ -14,7 +14,12 @@ Platform:
   win32 x64
 
 Trace: 
-  Error: EPERM: operation not permitted, scandir 'C:\Documents and Settings'
+  SyntaxError: C:\Users\udodi\Documents\Kainy\zuri\game-phase\Zuri-Voting-App\react-app\package.json: Unexpected token x in JSON at position 1759
+      at JSON.parse (<anonymous>)
+      at C:\Users\udodi\AppData\Roaming\npm\node_modules\yarn\lib\cli.js:1625:59
+      at Generator.next (<anonymous>)
+      at step (C:\Users\udodi\AppData\Roaming\npm\node_modules\yarn\lib\cli.js:310:30)
+      at C:\Users\udodi\AppData\Roaming\npm\node_modules\yarn\lib\cli.js:321:13
 
 npm manifest: 
   {
@@ -24,15 +29,15 @@ npm manifest:
     "description": "A DApp that helps an organisation to setup an election for leadership position in its school.",
     "main": "index.js",
     "workspaces": [
-      "/*"
+      "./react-app"
     ],
     "scripts": {
       "test": "test",
       "start": "yarn workspace indigo-voting start",
-      "build": "yarn --cwd react-app build",
+      "build": "yarn --cwd react-app build:tailwind",
       "react-test": "yarn --cwd react-app test",
-      "eject": "yarn --cwd react-app eject",
-      "surge": "yarn --cwd react-app surge"
+      "eject": "npm --prefix react-app eject",
+      "surge": "npm --prefix react-app surge"
     },
     "repository": {
       "type": "git",
