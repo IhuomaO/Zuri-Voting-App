@@ -2,40 +2,96 @@
 pragma solidity ^0.8.0;
 
 import "@openzeppelin/contracts/access/Ownable.sol";
+import "@openzeppelin/contracts/utils/math/SafeMath.sol";
 
 contract Voting is Ownable {
+
+    // using SafeMath256 for uint;
+    // using SafeMath32 for uint32;
+    // using SafeMath8 for uint8;
+
     /**Global Variables and arrays
     */ 
     address public chairman;
     address[] public teachers;
-    address[] public BOD;
+    address[] public BODs;
     address[] public students;
-    address[] public stakeholders;
-    Candidate[] public candidates;
-    uint256 candidateCount;
+    address[] public stakeholdersList;
+   // uint256 candidateCount;
     uint256 voterCount;
     bool votingState;
     bool released;
     bool paused;
    
 
+    /// @notice a declaration of different roles available to be assigned to stakeholders
+    /// @dev an enum to represent the possible roles an address can take.
+    enum Role {
+        BOD,
+        TEACHER,
+        STUDENT,
+        CHAIRMAN
+    } 
 
-     // Modeling a candidate
+    /// @notice a declaration of different states available for an election
+    /// @dev an enum to represent the possible states an election can have.
+    enum ElectionStatus {created, ongoingPhase, closedPhase, revealPhase}
+
+    /// @notice a way to store details of each stakeholder
+    /// @dev a struct to store the details of each stakeholder
+    /// @param role a variable to store the role of type enum 
+    /// @param hasVoted a boolean to store whether a person has voted or not 
+    /// @param name a variable to show the candidate's name during election
+    struct Stakeholder {
+        Role role;
+        bool hasVoted; 
+        string name;  
+    } 
+
+
+    /// @notice a way to store details of each Candidate
+    /// @dev a struct to store the details of each Candidate
+    /// @param name a variable to show the candidate's name during election
+    /// @param slogan a variable to show the candidate's slogan for the election
+    /// @param voteCount a variable to show the candidate's votes recieved during election
     struct Candidate {
         address candidateAddress;
-        uint256 candidateId;
         string name;
         string slogan;
         uint256 voteCount;
+        uint256 candidateID;
     }
 
     // Modeling a Election Details
-    struct ElectionDetails {
+    struct Election {
         string name;
         string electivePosition;
+        uint256 candidateCount;
+        uint32 totalVotesCommitted;     // Total # of votes casted for the election
+        ElectionStatus status; 
+        bool votingState;
+        mapping (uint => Candidate) candidates; // Mapping of candidates in the election
+        mapping (address => bool) approvedVoters;   // Addresses approved
     }
 
-    ElectionDetails public electionDetails;
+     struct Vote {
+        uint32 numVotes;        // Number of votes 
+    }
+
+    // Track number of elections to use as electionID's
+    uint public electionCount;
+
+    /// @notice Public Variable to look up elections' information
+    /// @dev mapping to access each election by electionId
+    mapping (uint => Election) public elections;
+
+    // Double mapping from user address => pollId => user's vote
+    mapping (address => mapping (uint => Vote)) public votes;
+
+    /// @notice Public Variable to look up stakeholders' addresses
+    /// @dev mapping to check for an address in the stakeholder struct
+    mapping(address => Stakeholder) public stakeholders; 
+ 
 
     /**
     @notice mappings for access control
@@ -44,20 +100,24 @@ contract Voting is Ownable {
     mapping (address=>bool) public isBODMember;
     mapping (address=>bool) public isStudent;
     mapping (address=>bool) public isStakeHolder; 
-    mapping(address => bool) public hasVoted;
 
-
-    mapping(uint256  => Candidate) public candidateDetails;
 
     /**
     * @notice events emitted for front-end
     */ 
-        event TeacherSet(address [] _teachers);
-        event TeacherRemoved(address [] _teachers);
-        event StudentSet(address [] _students);
-        event StudentRemoved(address [] _students);
-        event BODSet(address [] _BODs);
-        event BODRemoved(address [] _BODs);
+        event TeacherSet(address _teachers);
+        event TeacherRemoved(address[] _teachers);
+        event StudentSet(address _students);
+        event StudentRemoved(address[] _students);
+        event BODSet(address  _BODs);
+        event BODRemoved(address[] _BODs);
+
+
+        // @notice this event is emitted when election is created.
+        event ElectionCreated(uint256 electionCount, string _name, string _electivePosition);
+
+        // @notice this event is emitted when multiple stakeholders are created.
+        event CreateMultipleStakeHolders(string message, uint256 _role);
         
 
     /**
@@ -108,27 +168,65 @@ contract Voting is Ownable {
             require(votingState, "Voting not allowed.");
             _;
         }
-        /**
+     /**
+    @notice Modifier to ensure voting by approved voters only
+    */ 
+         modifier onlyApprovedVoters(uint _electionID) { 
+        require (
+            elections[_electionID].approvedVoters[msg.sender] == true,
+            "You are not approved to vote in this election."    
+        ); 
+        _; 
+    }
+    /**
     @notice Modifier to ensure voting has started
     */ 
     function setChairman(address _chairman) public onlyOwner {
         chairman = _chairman;
     }
-    /**
-        @notice A method to set an address(es) as a Teacher(s)
-        @param _teachers addresses to set as Teachers.
-        */
-        function setTeacher(address [] memory _teachers) public onlyChairman NotPaused {
-            require(_teachers.length <= 50, "Can only set a max of 50 teachers at a time");
-            for(uint i = 0; i < _teachers.length; i++) {
-                require(isTeacher[_teachers[i]] == false);
-                teachers.push(_teachers[i]);
-                stakeholders.push(_teachers[i]);
-                isTeacher[_teachers[i]]= true;
-                isStakeHolder[_teachers[i]]= true;
-            }
-            emit TeacherSet(_teachers);
+    /// @notice create a stakeholder
+    /// @dev initialize the stakeholders mapping to roles and push them into their respective arrays
+    /// @param _address The address of the impending stakeholder
+    /// @param _role parameter taking the input for the role to be assigned to the inputted address
+    function createStakeHolder(address _address, uint256 _role, string memory _name)
+        public
+        onlyChairman
+    {
+        stakeholders[_address] = Stakeholder(Role(_role), false, _name); //add stakeholders to the mapping
+        stakeholdersList.push(_address); // add stakeholder's address to the list of stakeHolders addresses
+        if (stakeholders[_address].role == Role(0)) {
+            BODs.push(_address);
+            isBODMember[_address]= true;
+            isStakeHolder[_address]= true;
+            emit BODSet(_address);
         }
+        if (stakeholders[_address].role == Role(1)) {
+            teachers.push(_address);
+            isTeacher[_address]= true;
+            isStakeHolder[_address]= true;
+            emit TeacherSet(_address);
+        }
+        if (stakeholders[_address].role == Role(2)) {
+            students.push(_address);
+             isStudent[_address]= true;
+             isStakeHolder[_address]= true;
+            emit StudentSet(_address);
+        }
+    }
+    /// @notice create multiple stakeholders
+    /// @dev use a loop to add an array of addresses into respective roles
+    /// @param _addressArray an array of impending stakeholder addresses
+    /// @param _role parameter taking the input for the role to be assigned to the inputted address
+    function createMultipleStakeHolders(address[] memory _addressArray, uint256 _role, string[] memory _name ) public onlyChairman {
+        require(_addressArray.length <= 50, "Can only add a max of 50 stakeholders at a time");
+        require(_addressArray.length == _name.length, "The number of addresses and names must tally");
+        for (uint256 i = 0; i < _addressArray.length; i++){
+            createStakeHolder(_addressArray[i], _role, _name[i]);
+        }
+
+        emit CreateMultipleStakeHolders("You just created multiple stakeholders", _role);
+    }
+   
     /**
         @notice A method to remove an address(es) as a Teacher(s)
         @param _teachers addresses to remove as Teachers.
@@ -139,29 +237,16 @@ contract Voting is Ownable {
             uint index = find(_teachers[i], teachers);
                 teachers[index] = teachers[teachers.length - 1];
                 teachers.pop();
-            uint secondIndex = find(_teachers[i], stakeholders); 
-                stakeholders[secondIndex] = stakeholders[stakeholders.length - 1];
-                stakeholders.pop();
+            uint secondIndex = find(_teachers[i], stakeholdersList); 
+                stakeholdersList[secondIndex] = stakeholdersList[stakeholdersList.length - 1];
+                stakeholdersList.pop();
                 isTeacher[_teachers[i]]= false;
                 isStakeHolder[_teachers[i]]= false;
+                delete stakeholders[_teachers[i]];
             }
             emit TeacherRemoved(_teachers);
         }
-    /**
-        @notice A method to set an address(es) as a Student(s)
-        @param _students addresses to set as Teachers.
-        */
-        function setStudent(address [] memory _students) public onlyChairman NotPaused{
-            require(_students.length <= 50, "Can only set a max of 50 students at a time");
-            for(uint i = 0; i < _students.length; i++) {
-                 require(isStudent[_students[i]] == false);
-                students.push(_students[i]);
-                stakeholders.push(_students[i]);
-                isStudent[_students[i]]= true;
-                isStakeHolder[_students[i]]= true;
-            }
-            emit StudentSet(_students);
-        }
+
     /**
         @notice A method to remove an address(es) as a student(s)
         @param _students addresses to remove as students.
@@ -172,30 +257,16 @@ contract Voting is Ownable {
             uint index = find(_students[i], students);
                 students[index] = students[students.length - 1];
                 students.pop();
-            uint secondIndex = find(_students[i], stakeholders); 
-                stakeholders[secondIndex] = stakeholders[stakeholders.length - 1];
-                stakeholders.pop();
+            uint secondIndex = find(_students[i], stakeholdersList); 
+                stakeholdersList[secondIndex] = stakeholdersList[stakeholdersList.length - 1];
+                stakeholdersList.pop();
                 isStudent[_students[i]]= false;
                 isStakeHolder[_students[i]]= false;
+                delete stakeholders[_students[i]];
             }
             emit StudentRemoved(_students);
         }
 
-    /**
-        @notice A method to set an address(es) as a BOD(s)
-        @param _BOD addresses to set as BODs.
-        */
-        function setBOD(address [] memory _BOD) public onlyChairman NotPaused {
-            require(_BOD.length <= 50, "Can only set a max of 50 members of the Board of Directors at a time");
-            for(uint i = 0; i < _BOD.length; i++) {
-                 require(isBODMember[_BOD[i]] == false);
-                BOD.push(_BOD[i]);
-                stakeholders.push(_BOD[i]);
-                isBODMember[_BOD[i]]= true;
-                isStakeHolder[_BOD[i]]= true;
-            }
-            emit BODSet(_BOD);
-        }
     /**
         @notice A method to remove an address(es) as a BOD(s)
         @param _BOD addresses to remove as BODs.
@@ -203,14 +274,15 @@ contract Voting is Ownable {
         function removeBOD(address [] memory _BOD) public onlyChairman NotPaused{
             require(_BOD.length <= 50, "Can only remove a max of 50 BODs at a time");
             for(uint i = 0; i < _BOD.length; i++) {
-            uint index = find(_BOD[i], BOD);
-                BOD[index] = BOD[BOD.length - 1];
-                BOD.pop();
-            uint secondIndex = find(_BOD[i], stakeholders); 
-                stakeholders[secondIndex] = stakeholders[stakeholders.length - 1];
-                stakeholders.pop();
+            uint index = find(_BOD[i], BODs);
+                BODs[index] = BODs[BODs.length - 1];
+                BODs.pop();
+            uint secondIndex = find(_BOD[i], stakeholdersList); 
+                stakeholdersList[secondIndex] = stakeholdersList[stakeholdersList.length - 1];
+                stakeholdersList.pop();
                 isBODMember[_BOD[i]]= false;
                 isStakeHolder[_BOD[i]]= false;
+                delete stakeholders[_BOD[i]];
             }
             emit BODRemoved(_BOD);
         }
@@ -242,25 +314,25 @@ contract Voting is Ownable {
         paused = false;
     }
 
-
-    // Adding new candidates
-    function addCandidate(address _candidateAddress, string memory _name, string memory _slogan)
-        public
-        // Only students can not can add
-        onlyTrustee
+     /**
+    @dev Adds a candidate to a poll. 
+    @param _electionID is the Id of the election to add candidate to.
+    @param _name is Candidate name, short description of option, etc.
+     */
+    function addCandidate(uint _electionID, address _candidateAddress, string memory _name, string memory _slogan) 
+        public 
+         onlyTrustee
         NotPaused
     {
-        Candidate memory newCandidate =
-            Candidate({
-                candidateAddress: _candidateAddress,
-                candidateId: candidateCount,
-                name: _name,
-                slogan: _slogan,
-                voteCount: 0
-            });
-        candidateDetails[candidateCount] = newCandidate;
-        candidates.push(newCandidate);
-        candidateCount += 1;
+        // SafeMath8 also catches this require(), but this allows an error message to be provided
+        require(elections[_electionID].candidateCount < 15, "Can not add more than 15 candidates.");
+        uint256 newCandidateCount = elections[_electionID].candidateCount;
+        newCandidateCount = newCandidateCount++;
+        elections[_electionID].candidates[newCandidateCount].candidateID = newCandidateCount;
+        elections[_electionID].candidates[newCandidateCount].candidateAddress = _candidateAddress;
+        elections[_electionID].candidates[newCandidateCount].name = _name;
+        elections[_electionID].candidates[newCandidateCount].slogan = _slogan;
+        elections[_electionID].candidateCount = newCandidateCount;
     }
 
 
@@ -271,27 +343,32 @@ contract Voting is Ownable {
         public
         onlyTrustee // Only students can not add
         NotPaused
+        returns(uint256)
     {
-        electionDetails = ElectionDetails(
-            _name,
-            _electivePosition
-        );
+        // Create election with provided inputs
+        electionCount = electionCount++;
+        elections[electionCount].name =  _name;
+        elections[electionCount].electivePosition =   _electivePosition;
+
+        emit ElectionCreated(electionCount, _name, _electivePosition);
+
+        return electionCount;
     }
 
     
-    function getElectionTitle() public view returns (string memory) {
-        return electionDetails.name;
-    }
+    // function getElectionTitle() public view returns (string memory) {
+    //     return electionDetails.name;
+    // }
 
-    function getElectionPosition() public view returns (string memory) {
-        return electionDetails.electivePosition;
-    }
+    // function getElectionPosition() public view returns (string memory) {
+    //     return electionDetails.electivePosition;
+    // }
 
     // Get candidates count
-    function getTotalCandidate() public view returns (uint256) {
-        // Returns total number of candidates
-        return candidateCount;
-    }
+    // function getTotalCandidate() public view returns (uint256) {
+    //     // Returns total number of candidates
+    //     return candidateCount;
+    // }
 
     // Get voters count
     function getTotalVoter() public view returns (uint256) {
@@ -300,35 +377,64 @@ contract Voting is Ownable {
     }
 
     // Vote
-    function vote(uint256 candidateId) public onlyStakeHolder VotingActive {
-        require(hasVoted[msg.sender] == false, "You have already voted");
-        hasVoted[msg.sender] = true;
-        candidateDetails[candidateId].voteCount++;
-        candidates[candidateId].voteCount++;
-        voterCount++;
+   
+    /**
+    @dev Cast votes. Allows users to vote anytime during the ongoingElection
+    phase.
+    @param _electionID Id of the election to vote in.
+    @param _numVotes number of votes committed.
+     */
+    function castVote(uint _electionID, uint _candidateID, uint32 _numVotes) 
+        public 
+        onlyStakeHolder
+    {
+
+        /* Can vote only one time per election
+         */
+        require (
+            votes[msg.sender][_electionID].numVotes == 0,
+            "Can only caste votes once per election."
+        );
+        require (
+            elections[_electionID].votingState == true,
+            "Voting has not started yet."
+        );
+        require (
+            _candidateID > 0 && _candidateID <= elections[_electionID].candidateCount,
+            "Vote must be placed for a valid candidate."
+        );
+        // Commit the vote(s) and adjust totalVotesCommitted
+        Vote memory newVote = Vote(uint32(_numVotes));
+        votes[msg.sender][_electionID] = newVote;
+        elections[_electionID].totalVotesCommitted = elections[_electionID].totalVotesCommitted++;
+        
+        uint _voteCount = uint(elections[_electionID].candidates[_electionID].voteCount);
+        _voteCount = _voteCount++;
+        elections[_electionID].candidates[_electionID].voteCount = uint32(_voteCount);
+
     }
 
     // Start voting
-    function startElection() public onlyChairman {
-        votingState = true;
+    function startElection(uint256 _electionID) public onlyChairman {
+        elections[_electionID].votingState = true;
     }
 
     // End voting
-    function endElection() public onlyChairman {
-        votingState = false;
+    function endElection(uint256 _electionID) public onlyChairman {
+        elections[_electionID].votingState = false;
     }
 
-  function compileResult() public view onlyTrustee
-            returns (string memory)
-    {
-        Candidate memory winningCandidate;
-        uint winningVoteCount = 0;
-        for (uint i = 0; i < candidates.length; i++) {
-            if (candidates[i].voteCount > winningVoteCount) {
-                winningCandidate = candidates[i];
-            }
-        }
-    return winningCandidate.name;
-    }
-  
+//   function CurrentWinner() public view onlyTrustee
+//             returns (string memory)
+//     {
+//         Candidate memory winningCandidate;
+//         uint winningVoteCount = 0;
+//         for (uint i = 0; i < candidates.length; i++) {
+//             if (candidates[i].voteCount > winningVoteCount) {
+//                 winningCandidate = candidates[i];
+//             }
+//         }
+//     return winningCandidate.name;
+//     }
+   
 }
