@@ -2,13 +2,9 @@
 pragma solidity ^0.8.0;
 
 import "@openzeppelin/contracts/access/Ownable.sol";
-import "@openzeppelin/contracts/utils/math/SafeMath.sol";
 
 contract Voting is Ownable {
 
-    // using SafeMath256 for uint;
-    // using SafeMath32 for uint32;
-    // using SafeMath8 for uint8;
 
     /**Global Variables and arrays
     */ 
@@ -58,7 +54,7 @@ contract Voting is Ownable {
         address candidateAddress;
         string name;
         string slogan;
-        uint256 voteCount;
+        uint32 voteCount;
         uint256 candidateID;
     }
 
@@ -68,10 +64,9 @@ contract Voting is Ownable {
         string electivePosition;
         uint256 candidateCount;
         uint32 totalVotesCommitted;     // Total # of votes casted for the election
-        ElectionStatus status; 
+       // ElectionStatus status; 
         bool votingState;
-        mapping (uint => Candidate) candidates; // Mapping of candidates in the election
-        mapping (address => bool) approvedVoters;   // Addresses approved
+      //  mapping (address => bool) approvedVoters;   // Addresses approved
     }
 
      struct Vote {
@@ -79,11 +74,15 @@ contract Voting is Ownable {
     }
 
     // Track number of elections to use as electionID's
-    uint public electionCount;
+    uint256 public electionCount;
+
+    // @notice Public Variable to look up elections' candidate(s)
+    /// @dev mapping to check for an electionID in the candidate struct
+    mapping (uint256 => Candidate) public candidates; // mapping elections to unique candidates of the election
 
     /// @notice Public Variable to look up elections' information
     /// @dev mapping to access each election by electionId
-    mapping (uint => Election) public elections;
+    mapping (uint256 => Election) public elections;
 
     // Double mapping from user address => pollId => user's vote
     mapping (address => mapping (uint => Vote)) public votes;
@@ -168,16 +167,7 @@ contract Voting is Ownable {
             require(votingState, "Voting not allowed.");
             _;
         }
-     /**
-    @notice Modifier to ensure voting by approved voters only
-    */ 
-         modifier onlyApprovedVoters(uint _electionID) { 
-        require (
-            elections[_electionID].approvedVoters[msg.sender] == true,
-            "You are not approved to vote in this election."    
-        ); 
-        _; 
-    }
+    
     /**
     @notice Modifier to ensure voting has started
     */ 
@@ -327,11 +317,10 @@ contract Voting is Ownable {
         // SafeMath8 also catches this require(), but this allows an error message to be provided
         require(elections[_electionID].candidateCount < 15, "Can not add more than 15 candidates.");
         uint256 newCandidateCount = elections[_electionID].candidateCount;
-        newCandidateCount = newCandidateCount++;
-        elections[_electionID].candidates[newCandidateCount].candidateID = newCandidateCount;
-        elections[_electionID].candidates[newCandidateCount].candidateAddress = _candidateAddress;
-        elections[_electionID].candidates[newCandidateCount].name = _name;
-        elections[_electionID].candidates[newCandidateCount].slogan = _slogan;
+        candidates[newCandidateCount] = Candidate(_candidateAddress, _name, _slogan, 0, newCandidateCount);
+        newCandidateCount = newCandidateCount+ 1;
+        //elections[_electionID].candidates[newCandidateCount].candidateID = newCandidateCount;
+
         elections[_electionID].candidateCount = newCandidateCount;
     }
 
@@ -346,24 +335,15 @@ contract Voting is Ownable {
         returns(uint256)
     {
         // Create election with provided inputs
-        electionCount = electionCount++;
-        elections[electionCount].name =  _name;
-        elections[electionCount].electivePosition =   _electivePosition;
-
+        elections[electionCount] = Election(_name,  _electivePosition, 0, 0, false );
+        electionCount = electionCount+ 1;
+     
         emit ElectionCreated(electionCount, _name, _electivePosition);
 
         return electionCount;
     }
 
     
-    // function getElectionTitle() public view returns (string memory) {
-    //     return electionDetails.name;
-    // }
-
-    // function getElectionPosition() public view returns (string memory) {
-    //     return electionDetails.electivePosition;
-    // }
-
     // Get candidates count
     // function getTotalCandidate() public view returns (uint256) {
     //     // Returns total number of candidates
@@ -400,17 +380,17 @@ contract Voting is Ownable {
             "Voting has not started yet."
         );
         require (
-            _candidateID > 0 && _candidateID <= elections[_electionID].candidateCount,
+            _candidateID >= 0 && _candidateID <= elections[_electionID].candidateCount,
             "Vote must be placed for a valid candidate."
         );
         // Commit the vote(s) and adjust totalVotesCommitted
         Vote memory newVote = Vote(uint32(_numVotes));
         votes[msg.sender][_electionID] = newVote;
-        elections[_electionID].totalVotesCommitted = elections[_electionID].totalVotesCommitted++;
+        elections[_electionID].totalVotesCommitted = elections[_electionID].totalVotesCommitted+1;
         
-        uint _voteCount = uint(elections[_electionID].candidates[_electionID].voteCount);
-        _voteCount = _voteCount++;
-        elections[_electionID].candidates[_electionID].voteCount = uint32(_voteCount);
+        uint _voteCount = uint(candidates[_electionID].voteCount);
+        _voteCount = _voteCount+1;
+        candidates[_electionID].voteCount = uint32(_voteCount);
 
     }
 
