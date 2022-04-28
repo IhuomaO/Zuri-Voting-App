@@ -18,7 +18,6 @@ const getEthereumContract = () => {
     contractABI,
     signer
   );
-
   return contract;
 };
 
@@ -36,67 +35,66 @@ export const IndigoVotingProvider = ({ children }) => {
   const history = useHistory();
 
 
-  const connectWallet = async (redirect) => {
+  const connectWallet = async () => {
     try {
       if (!ethereum) return toast.warning("Please install metamask");
       const accounts = await ethereum.request({
         method: "eth_requestAccounts",
       });
       localStorage.setItem("account", accounts[0]);
-      console.log(localStorage.getItem("account"));
-      redirect && history.push("/auth/dashboard");
-      // setStoreContext({ currentAccount: accounts[0] });
+      // console.log(localStorage.getItem("account"));
+      // history.push("/auth/dashboard");
+      setStoreContext({ currentAccount: accounts[0] });
+
+      const { contract, currentAccount } = store
+      setStoreContext({
+        ...store,
+        connectWallet,
+        currentAccount: localStorage.getItem("account"),
+        test: 'trying',
+        contractDetails: {
+          candidateDetails: await contract.electionDetails(),
+          owner: await contract.owner(),
+          // totalVoters: await contract.getTotalVoter(),
+          // chairman: await contract.chairman(),
+          // isTeacher: await contract.isTeacher(currentAccount),
+          // isStudent: await contract.isStudent(currentAccount),
+          // isBODMember: await contract.isBODMember(currentAccount),
+          // isStakeHolder: await contract.isStakeHolder(currentAccount),
+          // bod: await contract.BOD(store.currentAccount),
+          // candidateDetails: contract.candidateDetails(),
+        }
+      })
+
     } catch (error) {
       console.log(`${error.response}`);
     }
   };
 
 
-  const checkIfWalletIsConnected = async () => {
-    try {
-      // if (!ethereum) return toast.warning("Please install metamask");
+  const checkIfWalletIsConnected = () => {
+    // try {
+    // if (!ethereum) return toast.warning("Please install metamask");
 
-      // const accounts = await ethereum.request({ method: "eth_accounts" });
+    // const accounts = await ethereum.request({ method: "eth_accounts" });
 
-      // if (accounts.length) setStoreContext({ currentAccount: accounts[0] });
-      // console.log(accounts);
-      connectWallet();
-      console.log('active');
-
-      const { contract } = store
-
-      setStoreContext({
-        connectWallet,
-        currentAccount: localStorage.getItem('account'),
-        contractDetails: {
-          totalVoters: await contract.getTotalVoter(),
-          owner: await contract.owner(),
-          chairman: await contract.chairman(),
-          isTeacher: await contract.isTeacher(store.currentAccount),
-          isStudent: await contract.isStudent(store.currentAccount),
-          isBODMember: await contract.isBODMember(store.currentAccount),
-          isStakeHolder: await contract.isStakeHolder(store.currentAccount),
-          // bod: await contract.BOD(store.currentAccount),
-          // candidateDetails: contract.candidateDetails(),
+    // if (accounts.length) setStoreContext({ currentAccount: accounts[0] });
+    // console.log(accounts);
+    connectWallet();
 
 
-        }
-      })
-    } catch (error) {
-      toast.warning(`${error.response}`);
-    }
+    // } catch (error) {
+    // toast.warning(`${error.response}`);
+    // }
   };
 
 
 
   useEffect(() => {
-    checkIfWalletIsConnected();
+    connectWallet();
+    console.log(store)
     // eslint-disable-next-line
   }, []);
-
-  console.log('last', store);
-
-
 
   return (
     <IndigoVotingContext.Provider

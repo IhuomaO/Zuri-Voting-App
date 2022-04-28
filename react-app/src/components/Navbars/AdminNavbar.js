@@ -3,8 +3,11 @@ import React, { useEffect } from "react";
 import UserDropdown from "components/Dropdowns/UserDropdown.js";
 import { useStoreContext } from "context/IndigoVotingContext";
 import { Redirect } from "react-router-dom";
+import { useHistory } from "react-router-dom";
 
 export default function Navbar() {
+  const history = useHistory();
+
 
   const { store } = useStoreContext()
   const { connectWallet, currentAccount } = store
@@ -19,8 +22,7 @@ export default function Navbar() {
           {/* Brand */}
           <a
             className="text-white text-sm uppercase hidden lg:inline-block font-semibold"
-            href="#pablo"
-            onClick={(e) => e.preventDefault()}
+            href="/"
           >
             Dashboard
           </a>
@@ -45,7 +47,9 @@ export default function Navbar() {
       </nav>
       {
         useEffect(() => {
-          if (!currentAccount) return <Redirect to='/' />
+          if (!currentAccount) history.push("/auth/dashboard");
+
+          // eslint-disable-next-line
         }, [currentAccount])
 
       }

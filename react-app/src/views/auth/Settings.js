@@ -11,6 +11,7 @@ import RegisterUser from "../../components/Forms/RegisterUser";
 export default function Settings() {
   const { store } = useStoreContext()
   const { owner, currentAccount, isTeacher, isStudent, isBODMember, chairman } = store.contractDetails
+  console.log(owner);
   return (
     <>
       <div className="flex flex-wrap mt-4">

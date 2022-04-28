@@ -22,8 +22,8 @@ function Register() {
     console.log(Object.values(electionChange));
     e.preventDefault();
     try {
-      console.log(electionChange);
-      const res = await contract.setElectionDetails(...Object.values(electionChange))
+      const electionChangeArr = Object.values(electionChange)
+      const res = await contract.setElectionDetails(...electionChangeArr)
       console.log(res);
     } catch (error) {
       console.log(error)
@@ -36,7 +36,7 @@ function Register() {
       <div className="rounded-t mb-0 px-4 py-3 border-0">
         <div className="flex flex-wrap items-center">
           <div className="relative w-full px-4 max-w-full flex-grow flex-1">
-            <h6 className="text-blueGray-500 text-sm font-bold">
+            <h6 className="text-blueGray-500 text-sm font-bold uppercase">
               Create Election
             </h6>
           </div>

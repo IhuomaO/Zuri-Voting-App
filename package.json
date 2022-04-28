@@ -8,7 +8,7 @@
     "./react-app"
   ],
   "scripts": {
-    "test": "test",
+    "test": "hardhat test",
     "start": "yarn workspace indigo-voting start",
     "build": "yarn --cwd react-app build:tailwind",
     "react-test": "yarn --cwd react-app test",
