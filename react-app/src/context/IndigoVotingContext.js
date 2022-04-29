@@ -37,34 +37,17 @@ export const IndigoVotingProvider = ({ children }) => {
 
   const connectWallet = async () => {
     try {
+      console.log('trying to connect');
       if (!ethereum) return toast.warning("Please install metamask");
       const accounts = await ethereum.request({
         method: "eth_requestAccounts",
       });
       localStorage.setItem("account", accounts[0]);
       // console.log(localStorage.getItem("account"));
-      // history.push("/auth/dashboard");
+      history.push("/auth/dashboard");
       setStoreContext({ currentAccount: accounts[0] });
 
-      const { contract, currentAccount } = store
-      setStoreContext({
-        ...store,
-        connectWallet,
-        currentAccount: localStorage.getItem("account"),
-        test: 'trying',
-        contractDetails: {
-          candidateDetails: await contract.electionDetails(),
-          owner: await contract.owner(),
-          // totalVoters: await contract.getTotalVoter(),
-          // chairman: await contract.chairman(),
-          // isTeacher: await contract.isTeacher(currentAccount),
-          // isStudent: await contract.isStudent(currentAccount),
-          // isBODMember: await contract.isBODMember(currentAccount),
-          // isStakeHolder: await contract.isStakeHolder(currentAccount),
-          // bod: await contract.BOD(store.currentAccount),
-          // candidateDetails: contract.candidateDetails(),
-        }
-      })
+
 
     } catch (error) {
       console.log(`${error.response}`);
@@ -72,27 +55,45 @@ export const IndigoVotingProvider = ({ children }) => {
   };
 
 
-  const checkIfWalletIsConnected = () => {
-    // try {
-    // if (!ethereum) return toast.warning("Please install metamask");
+  const checkIfWalletIsConnected = async () => {
+    try {
+      if (!ethereum) return toast.warning("Please install metamask");
 
-    // const accounts = await ethereum.request({ method: "eth_accounts" });
+      const accounts = await ethereum.request({ method: "eth_accounts" });
 
-    // if (accounts.length) setStoreContext({ currentAccount: accounts[0] });
-    // console.log(accounts);
-    connectWallet();
+      if (accounts.length) setStoreContext({ currentAccount: accounts[0] });
 
 
-    // } catch (error) {
-    // toast.warning(`${error.response}`);
-    // }
+      const account = accounts[0]
+
+      const { contract } = store
+      setStoreContext({
+        ...store,
+        currentAccount: account,
+        test: 'trying',
+        connectWallet,
+        contractDetails: {
+          electionDetails: await contract.electionDetails(),
+          owner: await contract.owner(),
+          totalVoters: await contract.getTotalVoter(),
+          chairman: await contract.chairman(),
+          isTeacher: await contract.isTeacher(account),
+          isStudent: await contract.isStudent(account),
+          isBODMember: await contract.isBODMember(account),
+          isStakeHolder: await contract.isStakeHolder(account),
+          // bod: await contract.BOD(store.currentAccount),
+          // candidateDetails: contract.candidateDetails(),
+        }
+      })
+    } catch (error) {
+      toast.warning(`${error.response}`);
+    }
   };
 
 
 
   useEffect(() => {
-    connectWallet();
-    console.log(store)
+    checkIfWalletIsConnected();
     // eslint-disable-next-line
   }, []);
 
