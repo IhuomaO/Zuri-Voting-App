@@ -1,8 +1,19 @@
-import React from "react";
+import React, { useEffect } from "react";
 
 import UserDropdown from "components/Dropdowns/UserDropdown.js";
+import { useStoreContext } from "context/IndigoVotingContext";
+import { Redirect } from "react-router-dom";
+import { useHistory } from "react-router-dom";
 
 export default function Navbar() {
+  const history = useHistory();
+
+
+  const { store } = useStoreContext()
+  const { connectWallet, currentAccount } = store
+
+
+
   return (
     <>
       {/* Navbar */}
@@ -11,15 +22,14 @@ export default function Navbar() {
           {/* Brand */}
           <a
             className="text-white text-sm uppercase hidden lg:inline-block font-semibold"
-            href="#pablo"
-            onClick={(e) => e.preventDefault()}
+            href="/"
           >
             Dashboard
           </a>
           {/* Form */}
           <form className="md:flex hidden flex-row flex-wrap items-center lg:ml-auto mr-3">
             <div className="relative flex w-full flex-wrap items-stretch">
-              <span className="z-10 h-full leading-snug font-normal text-center text-blueGray-300 absolute bg-transparent rounded text-base items-center justify-center w-8 pl-3 py-3">
+              <span className="z-10 h-full leading-snug font-normal absolute text-center text-blueGray-300 bg-transparent rounded text-base items-center justify-center w-8 pl-3 py-3">
                 <i className="fas fa-search"></i>
               </span>
               <input
@@ -35,6 +45,15 @@ export default function Navbar() {
           </ul>
         </div>
       </nav>
+      {
+        useEffect(() => {
+          if (!currentAccount) history.push("/auth/dashboard");
+
+          // eslint-disable-next-line
+        }, [currentAccount])
+
+      }
+
       {/* End Navbar */}
     </>
   );

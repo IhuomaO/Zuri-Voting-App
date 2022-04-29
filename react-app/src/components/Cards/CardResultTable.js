@@ -104,9 +104,9 @@ export default function CardResultTable({ color }) {
                       alt="..."
                       className="w-10 h-10 rounded-full border-2 border-blueGray-50 shadow"
                     ></img>
-                    <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
+                    <div className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
                       Wangudo
-                    </td>
+                    </div>
                   </div>
                 </td>
               </tr>

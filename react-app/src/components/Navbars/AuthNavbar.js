@@ -1,14 +1,17 @@
-/*eslint-disable*/
 import React, { useState, useContext } from "react";
 import { Link } from "react-router-dom";
 
 import { IndigoVotingContext } from "context/IndigoVotingContext";
+import { useHistory } from "react-router-dom";
+import { useStoreContext } from "context/IndigoVotingContext";
 
 // components
 
 export default function Navbar(props) {
-  const [navbarOpen, setNavbarOpen] = React.useState(false);
-  const { connectWallet, currentAccount } = useContext(IndigoVotingContext);
+  const [navbarOpen, setNavbarOpen] = useState(false);
+  const { store } = useStoreContext()
+  const { connectWallet, currentAccount } = store
+  console.log(store);
   return (
     <>
       <nav className="top-0 absolute z-50 w-full flex flex-wrap items-center justify-between px-2 py-3 navbar-expand-lg">
@@ -50,8 +53,9 @@ export default function Navbar(props) {
               <li className="flex items-center">
                 <a
                   className="lg:text-white lg:hover:text-blueGray-200 text-blueGray-700 px-3 py-4 lg:py-2 flex items-center text-xs uppercase font-bold"
-                  href="#"
+                  href='https://github.com/IhuomaO/Zuri-Voting-App'
                   target="_blank"
+                  rel='noreferrer'
                 >
                   <i className="lg:text-blueGray-200 text-blueGray-400 fab fa-facebook text-lg leading-lg " />
                   <span className="lg:hidden inline-block ml-2">Share</span>
@@ -61,8 +65,9 @@ export default function Navbar(props) {
               <li className="flex items-center">
                 <a
                   className="lg:text-white lg:hover:text-blueGray-200 text-blueGray-700 px-3 py-4 lg:py-2 flex items-center text-xs uppercase font-bold"
-                  href="#"
+                  href='https://github.com/IhuomaO/Zuri-Voting-App'
                   target="_blank"
+                  rel='noreferrer'
                 >
                   <i className="lg:text-blueGray-200 text-blueGray-400 fab fa-twitter text-lg leading-lg " />
                   <span className="lg:hidden inline-block ml-2">Tweet</span>
@@ -74,13 +79,13 @@ export default function Navbar(props) {
                   className="lg:text-white lg:hover:text-blueGray-200 text-blueGray-700 px-3 py-4 lg:py-2 flex items-center text-xs uppercase font-bold"
                   href="https://github.com/IhuomaO/Zuri-Voting-App"
                   target="_blank"
+                  rel='noreferrer'
                 >
                   <i className="lg:text-blueGray-200 text-blueGray-400 fab fa-github text-lg leading-lg " />
                   <span className="lg:hidden inline-block ml-2">Star</span>
                 </a>
               </li>
-
-              {!currentAccount.length > 0 ? (
+              {!currentAccount ? (
                 <li className="flex items-center">
                   <button
                     className="bg-white text-blueGray-700 active:bg-blueGray-50 text-xs font-bold uppercase px-4 py-2 rounded shadow hover:shadow-md outline-none focus:outline-none lg:mr-1 lg:mb-0 ml-3 mb-3 ease-linear transition-all duration-150"
