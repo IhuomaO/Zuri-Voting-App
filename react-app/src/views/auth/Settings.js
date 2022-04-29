@@ -10,12 +10,16 @@ import RegisterUser from "../../components/Forms/RegisterUser";
 
 export default function Settings() {
   const { store } = useStoreContext()
-  const { owner, currentAccount, isTeacher, isStudent, isBODMember, chairman } = store.contractDetails
+  const { owner, isLoading, currentAccount, isTeacher, isStudent, isBODMember, chairman } = store.contractDetails
   console.log(store);
-  return (
+  return isLoading ?
+    <div className="relative z-10 text-white text-center">
+      Loading...
+    </div>
+    :
     <>
       <div className="flex flex-wrap mt-4">
-        {owner === currentAccount &&
+        {currentAccount === owner &&
           <div className="w-full xl:w-4/12 px-4">
             <RegisterUser />
           </div>}
@@ -26,5 +30,5 @@ export default function Settings() {
           </div>}
       </div>
     </>
-  );
+
 }

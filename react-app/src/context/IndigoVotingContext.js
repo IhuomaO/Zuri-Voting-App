@@ -28,7 +28,8 @@ export const IndigoVotingProvider = ({ children }) => {
     currentAccount: null,
     contract: getEthereumContract(),
     connectWallet: null,
-    contractDetails: {},
+    contractDetails: { isLoading: true },
+
   })
   const setStoreContext = (state) => setStore({ ...store, ...state })
 
@@ -81,8 +82,9 @@ export const IndigoVotingProvider = ({ children }) => {
           isStudent: await contract.isStudent(account),
           isBODMember: await contract.isBODMember(account),
           isStakeHolder: await contract.isStakeHolder(account),
-          // bod: await contract.BOD(store.currentAccount),
-          // candidateDetails: contract.candidateDetails(),
+          isLoading: false
+          // bod: await contract.BOD(account),
+          // candidateDetails: await contract.candidateDetails(),
         }
       })
     } catch (error) {
