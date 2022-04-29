@@ -71,7 +71,6 @@ export const IndigoVotingProvider = ({ children }) => {
       setStoreContext({
         ...store,
         currentAccount: account,
-        test: 'trying',
         connectWallet,
         contractDetails: {
           electionDetails: await contract.electionDetails(),

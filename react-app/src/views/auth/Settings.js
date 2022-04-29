@@ -1,5 +1,6 @@
 import { useStoreContext } from "context/IndigoVotingContext";
 import React from "react";
+import { BallTriangle, Oval } from "react-loader-spinner";
 
 // components
 
@@ -13,8 +14,8 @@ export default function Settings() {
   const { owner, isLoading, currentAccount, isTeacher, isStudent, isBODMember, chairman } = store.contractDetails
   console.log(store);
   return isLoading ?
-    <div className="relative z-10 text-white text-center">
-      Loading...
+    <div className=" flex justify-center items-center h-96 relative z-10">
+      <Oval color="#0284c7" height={40} width={40} />
     </div>
     :
     <>
