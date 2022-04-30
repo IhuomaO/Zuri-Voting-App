@@ -3,7 +3,7 @@ import { ethers } from "ethers";
 import { toast } from "react-toastify";
 import { useHistory } from "react-router-dom";
 
-import { contractABI, contractAddress } from "utils/constants";
+import { contractABI, contractAddress } from "../utils/constants";
 
 export const IndigoVotingContext = createContext();
 
@@ -23,72 +23,93 @@ const getEthereumContract = () => {
 
 export const useStoreContext = () => useContext(IndigoVotingContext)
 
+
+const connectWallet = async (history) => {
+  try {
+    console.log('trying to connect');
+    if (!ethereum) return toast.warning("Please install metamask");
+    const accounts = await ethereum.request({
+      method: "eth_requestAccounts",
+    });
+    localStorage.setItem("account", accounts[0]);
+    // console.log(localStorage.getItem("account"));
+    history.push("/auth/dashboard");
+    document.location.reload()
+    // setStoreContext({ currentAccount: accounts[0] });
+
+
+
+  } catch (error) {
+    console.log(`${error.response}`);
+  }
+};
+
 export const IndigoVotingProvider = ({ children }) => {
   const [store, setStore] = useState({
     currentAccount: null,
     contract: getEthereumContract(),
-    connectWallet: null,
+    connectWallet,
     contractDetails: { isLoading: true },
-
+    voted: false,
   })
   const setStoreContext = (state) => setStore({ ...store, ...state })
 
-  const history = useHistory();
+  // const history = useHistory();
 
 
-  const connectWallet = async () => {
-    try {
-      console.log('trying to connect');
-      if (!ethereum) return toast.warning("Please install metamask");
-      const accounts = await ethereum.request({
-        method: "eth_requestAccounts",
-      });
-      localStorage.setItem("account", accounts[0]);
-      // console.log(localStorage.getItem("account"));
-      history.push("/auth/dashboard");
-      setStoreContext({ currentAccount: accounts[0] });
-
-
-
-    } catch (error) {
-      console.log(`${error.response}`);
-    }
-  };
 
 
   const checkIfWalletIsConnected = async () => {
-    try {
-      if (!ethereum) return toast.warning("Please install metamask");
+    // try {
+    if (!ethereum) return toast.warning("Please install metamask");
 
-      const accounts = await ethereum.request({ method: "eth_accounts" });
+    const accounts = await ethereum.request({ method: "eth_accounts" });
 
-      if (accounts.length) setStoreContext({ currentAccount: accounts[0] });
+    if (accounts.length) setStoreContext({ currentAccount: accounts[0] })
+    else return
 
 
-      const account = accounts[0]
+    const account = accounts[0]
+    const { contract } = store
+    console.log(account);
 
-      const { contract } = store
-      setStoreContext({
-        ...store,
-        currentAccount: account,
-        connectWallet,
-        contractDetails: {
-          electionDetails: await contract.electionDetails(),
-          owner: await contract.owner(),
-          totalVoters: await contract.getTotalVoter(),
-          chairman: await contract.chairman(),
-          isTeacher: await contract.isTeacher(account),
-          isStudent: await contract.isStudent(account),
-          isBODMember: await contract.isBODMember(account),
-          isStakeHolder: await contract.isStakeHolder(account),
-          isLoading: false
-          // bod: await contract.BOD(account),
-          // candidateDetails: await contract.candidateDetails(),
-        }
-      })
-    } catch (error) {
-      toast.warning(`${error.response}`);
+    const contractDetails = {
+      owner: await contract.owner(),
+      // electionDetails: await contract.electionDetails(),
+      // totalVoters: await contract.getTotalVoter(),
+      chairman: await contract.chairman(),
+      isTeacher: await contract.isTeacher(account),
+      isStudent: await contract.isStudent(account),
+      isBODMember: await contract.isBODMember(account),
+      isStakeHolder: await contract.isStakeHolder(account),
+      winnerOfElection: async (id) => await contract.ViewWinnerOfElection(id),
+      // bod: await contract.BOD(account),
+      // candidateDetails: await contract.candidateDetails(),
+      isLoading: false
     }
+    contractDetails.owner = contractDetails.owner.toLowerCase()
+    contractDetails.isOwner = account === contractDetails.owner
+    contractDetails.isChairman = account === contractDetails.chairman.toLowerCase()
+
+
+    // const iAmStakeHolder = await contract.isStakeHolder(account)
+    // console.log(iAmStakeHolder);
+
+    // if (iAmStakeHolder) {
+    setStoreContext({
+      ...store,
+      currentAccount: account,
+      contractDetails,
+    })
+    // } else {
+    //   setStoreContext({
+    //     showNothing: true,
+    //     isLoading: false,
+    //   })
+    // }
+    // } catch (error) {
+    //   toast.warning(`${error.response}`);
+    // }
   };
 
 
