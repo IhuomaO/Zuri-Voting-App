@@ -46,7 +46,7 @@ export default function CardTable({ color }) {
                       : "bg-lightBlue-800 text-lightBlue-300 border-lightBlue-700")
                   }
                 >
-                  Name/Position
+                  Name
                 </th>
                 <th
                   className={
@@ -56,7 +56,7 @@ export default function CardTable({ color }) {
                       : "bg-lightBlue-800 text-lightBlue-300 border-lightBlue-700")
                   }
                 >
-                  Type
+                  Position
                 </th>
                 <th
                   className={
@@ -99,76 +99,73 @@ export default function CardTable({ color }) {
               </tr>
             </thead>
 
-            {
-              voted &&
 
-              <tbody>
-                <tr>
-                  <th className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4 text-left flex items-center">
-                    <img
-                      src={require("assets/img/7.png").default}
-                      className="h-12 w-12 bg-white rounded-full border"
+
+            <tbody>
+              <tr>
+                <th className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4 text-left flex items-center">
+                  <img
+                    src={require("assets/img/7.png").default}
+                    className="h-12 w-12 bg-white rounded-full border"
+                    alt="..."
+                  ></img>{" "}
+                  <span
+                    className={
+                      "ml-3 font-bold " +
+                      +(color === "light" ? "text-blueGray-600" : "text-white")
+                    }
+                  >
+                    Secretary
+                  </span>
+                </th>
+                <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
+                  Student
+                </td>
+                <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
+                  <i className="fas fa-circle text-orange-500 mr-2"></i> delayed
+                </td>
+                <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
+                  <div className="flex">
+                    {/* <img
+                      src={require("assets/img/1.png").default}
                       alt="..."
-                    ></img>{" "}
-                    <span
-                      className={
-                        "ml-3 font-bold " +
-                        +(color === "light" ? "text-blueGray-600" : "text-white")
-                      }
-                    >
-                      Secretary
-                    </span>
-                  </th>
-                  <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
-                    Student
-                  </td>
-                  <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
-                    <i className="fas fa-circle text-orange-500 mr-2"></i> delayed
-                  </td>
-                  <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
-                    <div className="flex">
-                      <img
-                        src={require("assets/img/1.png").default}
-                        alt="..."
-                        className="w-10 h-10 rounded-full border-2 border-blueGray-50 shadow"
-                      ></img>
-                      <img
-                        src={require("assets/img/2.jpg").default}
-                        alt="..."
-                        className="w-10 h-10 rounded-full border-2 border-blueGray-50 shadow -ml-4"
-                      ></img>
-                      <img
-                        src={require("assets/img/3.jpg").default}
-                        alt="..."
-                        className="w-10 h-10 rounded-full border-2 border-blueGray-50 shadow -ml-4"
-                      ></img>
-                      <img
-                        src={require("assets/img/4.png").default}
-                        alt="..."
-                        className="w-10 h-10 rounded-full border-2 border-blueGray-50 shadow -ml-4"
-                      ></img>
-                    </div>
-                  </td>
-                  <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
-                    <div className="flex items-center">
-                      <span className="mr-2">60%</span>
-                      <div className="relative w-full">
-                        <div className="overflow-hidden h-2 text-xs flex rounded bg-red-200">
-                          <div
-                            style={{ width: "60%" }}
-                            className="shadow-none flex flex-col text-center whitespace-nowrap text-white justify-center bg-red-500"
-                          ></div>
-                        </div>
+                      className="w-10 h-10 rounded-full border-2 border-blueGray-50 shadow"
+                    ></img>
+                    <img
+                      src={require("assets/img/2.jpg").default}
+                      alt="..."
+                      className="w-10 h-10 rounded-full border-2 border-blueGray-50 shadow -ml-4"
+                    ></img>
+                    <img
+                      src={require("assets/img/3.jpg").default}
+                      alt="..."
+                      className="w-10 h-10 rounded-full border-2 border-blueGray-50 shadow -ml-4"
+                    ></img>
+                    <img
+                      src={require("assets/img/4.png").default}
+                      alt="..."
+                      className="w-10 h-10 rounded-full border-2 border-blueGray-50 shadow -ml-4"
+                    ></img> */}
+                  </div>
+                </td>
+                <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
+                  <div className="flex items-center">
+                    <span className="mr-2">0%</span>
+                    <div className="relative w-full">
+                      <div className="overflow-hidden h-2 text-xs flex rounded bg-red-200">
+                        <div
+                          style={{ width: "60%" }}
+                          className="shadow-none flex flex-col text-center whitespace-nowrap text-white justify-center bg-red-500"
+                        ></div>
                       </div>
                     </div>
-                  </td>
-                  <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4 text-right">
-                    <TableDropdown />
-                  </td>
-                </tr>
-              </tbody>
-
-            }
+                  </div>
+                </td>
+                <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4 text-right">
+                  <TableDropdown />
+                </td>
+              </tr>
+            </tbody>
 
 
 
