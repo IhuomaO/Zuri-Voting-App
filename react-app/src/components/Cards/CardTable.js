@@ -4,8 +4,13 @@ import PropTypes from "prop-types";
 // components
 
 import TableDropdown from "components/Dropdowns/TableDropdown.js";
+import { useStoreContext } from "context/IndigoVotingContext";
 
 export default function CardTable({ color }) {
+
+  const { store } = useStoreContext()
+  const { voted } = store
+
   return (
     <>
       <div
@@ -41,7 +46,7 @@ export default function CardTable({ color }) {
                       : "bg-lightBlue-800 text-lightBlue-300 border-lightBlue-700")
                   }
                 >
-                  Name/Position
+                  Name
                 </th>
                 <th
                   className={
@@ -51,7 +56,7 @@ export default function CardTable({ color }) {
                       : "bg-lightBlue-800 text-lightBlue-300 border-lightBlue-700")
                   }
                 >
-                  Type
+                  Position
                 </th>
                 <th
                   className={
@@ -93,6 +98,9 @@ export default function CardTable({ color }) {
                 ></th>
               </tr>
             </thead>
+
+
+
             <tbody>
               <tr>
                 <th className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4 text-left flex items-center">
@@ -118,7 +126,7 @@ export default function CardTable({ color }) {
                 </td>
                 <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
                   <div className="flex">
-                    <img
+                    {/* <img
                       src={require("assets/img/1.png").default}
                       alt="..."
                       className="w-10 h-10 rounded-full border-2 border-blueGray-50 shadow"
@@ -137,12 +145,12 @@ export default function CardTable({ color }) {
                       src={require("assets/img/4.png").default}
                       alt="..."
                       className="w-10 h-10 rounded-full border-2 border-blueGray-50 shadow -ml-4"
-                    ></img>
+                    ></img> */}
                   </div>
                 </td>
                 <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
                   <div className="flex items-center">
-                    <span className="mr-2">60%</span>
+                    <span className="mr-2">0%</span>
                     <div className="relative w-full">
                       <div className="overflow-hidden h-2 text-xs flex rounded bg-red-200">
                         <div
@@ -158,6 +166,9 @@ export default function CardTable({ color }) {
                 </td>
               </tr>
             </tbody>
+
+
+
           </table>
         </div>
       </div>
