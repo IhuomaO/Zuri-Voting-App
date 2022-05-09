@@ -9,8 +9,8 @@ import { useStoreContext } from "context/IndigoVotingContext";
 export default function CardTable({ color }) {
 
   const { store } = useStoreContext()
-  const { voted } = store
-
+  const { electionDetails } = store.contractDetails
+  // console.log(store.contractDetails);
   return (
     <>
       <div
@@ -115,11 +115,13 @@ export default function CardTable({ color }) {
                       +(color === "light" ? "text-blueGray-600" : "text-white")
                     }
                   >
-                    Secretary
+                    {electionDetails ? electionDetails[0][0] : ' '}
+                    {/* Secretary */}
                   </span>
                 </th>
                 <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
-                  Student
+                  {electionDetails ? electionDetails[0][1] : ' '}
+                  {/* SUGx */}
                 </td>
                 <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
                   <i className="fas fa-circle text-orange-500 mr-2"></i> delayed

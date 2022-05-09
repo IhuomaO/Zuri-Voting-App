@@ -19,7 +19,6 @@ function Register() {
     if (form.name === 'create-candidate') {
       if (name === 'electionID') value = Number(value)
       if (name === 'candidateAddress') value = value.toLowerCase()
-      console.log(value);
       setCandidateChange((prev) => ({ ...prev, [name]: value }))
     } else {
       // if (name === 'participants') value = value.replace(/ /g, '').split(',')
@@ -40,6 +39,7 @@ function Register() {
       if (e.target.name === 'create-candidate') {
         console.log('Adding Candidate');
         const candidateChangeArr = Object.values(candidateChange)
+        console.log(candidateChangeArr);
         const res = await contract.addCandidate(...candidateChangeArr)
         console.log(res);
         setCandidateChange({})

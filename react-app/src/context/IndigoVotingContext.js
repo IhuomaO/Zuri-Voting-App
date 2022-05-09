@@ -75,8 +75,7 @@ export const IndigoVotingProvider = ({ children }) => {
 
     const contractDetails = {
       owner: await contract.owner(),
-      // electionDetails: await contract.electionDetails(),
-      // totalVoters: await contract.getTotalVoter(),
+      electionCount: await contract.electionCount(),
       chairman: await contract.chairman(),
       isTeacher: await contract.isTeacher(account),
       isStudent: await contract.isStudent(account),
@@ -91,11 +90,16 @@ export const IndigoVotingProvider = ({ children }) => {
     contractDetails.isOwner = account === contractDetails.owner
     contractDetails.isChairman = account === contractDetails.chairman.toLowerCase()
 
+    contractDetails.electionDetails = []
 
-    // const iAmStakeHolder = await contract.isStakeHolder(account)
-    // console.log(iAmStakeHolder);
+    contractDetails.electionCount = Number(contractDetails.electionCount)
 
-    // if (iAmStakeHolder) {
+    for (let i = 1; i <= contractDetails.electionCount; i++) {
+      let election = await contract.elections(i)
+      s
+      contractDetails.electionDetails.push(election)
+    }
+
     setStoreContext({
       ...store,
       currentAccount: account,

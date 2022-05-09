@@ -1,16 +1,13 @@
 import React from 'react'
 
 import { useStoreContext } from "context/IndigoVotingContext";
-import { IndigoVotingContext } from "context/IndigoVotingContext";
 import { useState, useContext } from "react";
-// import useForm from "Hooks/useForm";
 
 const OtherForms = () => {
 
   const [voteChange, setVoteChange] = useState({})
   const [startChange, setStartChange] = useState({})
   const [stopChange, setStopChange] = useState({})
-  // const [candidateChange, setCandidateChange] = useState({})
   const { store, setStoreContext } = useStoreContext()
   const { contract, contractDetails } = store
 
@@ -32,13 +29,13 @@ const OtherForms = () => {
   const handleVoteSubmit = async (e) => {
     e.preventDefault()
     const ChangeArr = Object.values(voteChange)
-    console.log(ChangeArr[0]);
+    console.log(ChangeArr);
     const res = await contract.castVote(...ChangeArr)
     console.log(res);
   }
   const handleStartSubmit = async (e) => {
     e.preventDefault()
-    const ChangeArr = Object.values(Number(startChange))
+    const ChangeArr = Object.values(startChange)
     console.log(ChangeArr);
     const res = await contract.startElection(...ChangeArr)
     console.log(res);
@@ -46,8 +43,7 @@ const OtherForms = () => {
   const handleEndSubmit = async (e) => {
     e.preventDefault()
     setStoreContext({ voted: true })
-    return
-    const ChangeArr = Object.values(Number(stopChange))
+    const ChangeArr = Object.values(stopChange)
     console.log(...ChangeArr);
     const res = await contract.endElection(...ChangeArr)
     console.log(res);
@@ -56,6 +52,8 @@ const OtherForms = () => {
 
   return (
     <div className='py-20'>
+
+      {/* Vote In Election */}
       <div className="relative flex flex-col min-w-0 break-words bg-white w-full mb-6 shadow-lg rounded">
         <div className="rounded-t mb-0 px-4 py-3 border-0">
           <div className="flex flex-wrap items-center">
