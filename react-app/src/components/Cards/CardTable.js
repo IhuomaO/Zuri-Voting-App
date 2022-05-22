@@ -101,36 +101,36 @@ export default function CardTable({ color }) {
             </thead>
 
 
-
-            <tbody>
-              <tr>
-                <th className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4 text-left flex items-center">
-                  <img
-                    src={require("assets/img/7.png").default}
-                    className="h-12 w-12 bg-white rounded-full border"
-                    alt="..."
-                  ></img>{" "}
-                  <span
-                    className={
-                      "ml-3 font-bold " +
-                      +(color === "light" ? "text-blueGray-600" : "text-white")
-                    }
-                  >
-                    {electionDetails ? electionDetails[0][0] : ' '}
-                  </span>
-                </th>
-                <td clpsName="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
-                  {electionDetails ? electionDetails[0][1] : ' '}
-                  {/* SUGx */}
-                </td>
-                <td className="border-t-0 px-6 align-middle text-center border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
-                  {/* <i className="fas fa-circle text-orange-500 mr-2"></i> */}
-                  {electionDetails ? Number(electionDetails[0][2]) : ' '}
-                </td>
-                <td className="border-t-0 px-6 align-middle text-center border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
-                  <div className="flex">
-                    {electionDetails ? Number(electionDetails[0][3]) : ' '}
-                    {/* <img
+            {electionDetails?.map((electionDetail) => (
+              <tbody>
+                <tr>
+                  <th className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4 text-left flex items-center">
+                    <img
+                      src={require("assets/img/7.png").default}
+                      className="h-12 w-12 bg-white rounded-full border"
+                      alt="..."
+                    ></img>{" "}
+                    <span
+                      className={
+                        "ml-3 font-bold " +
+                        +(color === "light" ? "text-blueGray-600" : "text-white")
+                      }
+                    >
+                      {electionDetails ? electionDetails[0][0] : ' '}
+                    </span>
+                  </th>
+                  <td clpsName="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
+                    {electionDetails ? electionDetail[1] : ' '}
+                    {/* SUGx */}
+                  </td>
+                  <td className="border-t-0 px-6 align-middle text-center border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
+                    {/* <i className="fas fa-circle text-orange-500 mr-2"></i> */}
+                    {electionDetails || isNaN(electionDetails) ? Number(electionDetail[2]) : ' '}
+                  </td>
+                  <td className="border-t-0 px-6 align-middle text-center border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
+                    <div className="flex">
+                      {electionDetails ? Number(electionDetails[3]) : ' '}
+                      {/* <img
                       src={require("assets/img/1.png").default}
                       alt="..."
                       className="w-10 h-10 rounded-full border-2 border-blueGray-50 shadow"
@@ -150,16 +150,18 @@ export default function CardTable({ color }) {
                       alt="..."
                       className="w-10 h-10 rounded-full border-2 border-blueGray-50 shadow -ml-4"
                     ></img> */}
-                  </div>
-                </td>
-                <td className="border-t-0 px-6 text-center align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
-                  <span className="">In Progress</span>
-                </td>
-                <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4 text-right">
-                  <TableDropdown />
-                </td>
-              </tr>
-            </tbody>
+                    </div>
+                  </td>
+                  <td className="border-t-0 px-6 text-center align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
+                    <span className="">In Progress</span>
+                  </td>
+                  <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4 text-right">
+                    <TableDropdown />
+                  </td>
+                </tr>
+              </tbody>
+            ))
+            }
 
 
 
