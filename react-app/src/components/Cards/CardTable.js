@@ -66,7 +66,7 @@ export default function CardTable({ color }) {
                       : "bg-lightBlue-800 text-lightBlue-300 border-lightBlue-700")
                   }
                 >
-                  Status
+                  Candidate Count
                 </th>
                 <th
                   className={
@@ -76,7 +76,8 @@ export default function CardTable({ color }) {
                       : "bg-lightBlue-800 text-lightBlue-300 border-lightBlue-700")
                   }
                 >
-                  Aspirants
+                  All Votes
+
                 </th>
                 <th
                   className={
@@ -116,18 +117,19 @@ export default function CardTable({ color }) {
                     }
                   >
                     {electionDetails ? electionDetails[0][0] : ' '}
-                    {/* Secretary */}
                   </span>
                 </th>
-                <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
+                <td clpsName="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
                   {electionDetails ? electionDetails[0][1] : ' '}
                   {/* SUGx */}
                 </td>
-                <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
-                  <i className="fas fa-circle text-orange-500 mr-2"></i> delayed
+                <td className="border-t-0 px-6 align-middle text-center border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
+                  {/* <i className="fas fa-circle text-orange-500 mr-2"></i> */}
+                  {electionDetails ? Number(electionDetails[0][2]) : ' '}
                 </td>
-                <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
+                <td className="border-t-0 px-6 align-middle text-center border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
                   <div className="flex">
+                    {electionDetails ? Number(electionDetails[0][3]) : ' '}
                     {/* <img
                       src={require("assets/img/1.png").default}
                       alt="..."
@@ -150,18 +152,8 @@ export default function CardTable({ color }) {
                     ></img> */}
                   </div>
                 </td>
-                <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
-                  <div className="flex items-center">
-                    <span className="mr-2">0%</span>
-                    <div className="relative w-full">
-                      <div className="overflow-hidden h-2 text-xs flex rounded bg-red-200">
-                        <div
-                          style={{ width: "60%" }}
-                          className="shadow-none flex flex-col text-center whitespace-nowrap text-white justify-center bg-red-500"
-                        ></div>
-                      </div>
-                    </div>
-                  </div>
+                <td className="border-t-0 px-6 text-center align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
+                  <span className="">In Progress</span>
                 </td>
                 <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4 text-right">
                   <TableDropdown />

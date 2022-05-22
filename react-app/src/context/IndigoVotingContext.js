@@ -96,7 +96,11 @@ export const IndigoVotingProvider = ({ children }) => {
 
     for (let i = 1; i <= contractDetails.electionCount; i++) {
       let election = await contract.elections(i)
-      s
+      // election.map((item, i) => {
+      //   if (i === 2 || i === 3) {
+      //     return Number(item)
+      //   } else return item
+      // })
       contractDetails.electionDetails.push(election)
     }
 
