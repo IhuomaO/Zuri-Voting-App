@@ -101,8 +101,8 @@ export default function CardTable({ color }) {
             </thead>
 
 
-            {electionDetails?.map((electionDetail) => (
-              <tbody>
+            {electionDetails?.map((electionDetail, i) => (
+              <tbody key={i}>
                 <tr>
                   <th className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4 text-left flex items-center">
                     <img
@@ -116,20 +116,20 @@ export default function CardTable({ color }) {
                         +(color === "light" ? "text-blueGray-600" : "text-white")
                       }
                     >
-                      {electionDetails ? electionDetails[0][0] : ' '}
+                      {electionDetail[0] || ' '}
                     </span>
                   </th>
-                  <td clpsName="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
-                    {electionDetails ? electionDetail[1] : ' '}
+                  <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
+                    {electionDetail[1] || ' '}
                     {/* SUGx */}
                   </td>
                   <td className="border-t-0 px-6 align-middle text-center border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
                     {/* <i className="fas fa-circle text-orange-500 mr-2"></i> */}
-                    {electionDetails || isNaN(electionDetails) ? Number(electionDetail[2]) : ' '}
+                    {Number(electionDetail[2]) || ' '}
                   </td>
                   <td className="border-t-0 px-6 align-middle text-center border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
                     <div className="flex">
-                      {electionDetails ? Number(electionDetails[3]) : ' '}
+                      {Number(electionDetails[3]) || ' '}
                       {/* <img
                       src={require("assets/img/1.png").default}
                       alt="..."
