@@ -44,14 +44,6 @@ export default function Navbar() {
           </ul>
         </div>
       </nav>
-      {
-        useEffect(() => {
-          if (!currentAccount) history.push("/auth/dashboard");
-
-          // eslint-disable-next-line
-        }, [currentAccount])
-
-      }
 
       {/* End Navbar */}
     </>
