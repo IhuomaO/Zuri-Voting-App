@@ -1,7 +1,7 @@
 import OtherForms from "../../components/Forms/OtherForms";
 import { useStoreContext } from "context/IndigoVotingContext";
 import React from "react";
-import { BallTriangle, Oval } from "react-loader-spinner";
+import { Oval } from "react-loader-spinner";
 
 // components
 

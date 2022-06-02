@@ -1,6 +1,5 @@
 import { useStoreContext } from 'context/IndigoVotingContext';
-import { IndigoVotingContext } from 'context/IndigoVotingContext';
-import React, { useState, useContext } from 'react'
+import React, { useState } from 'react'
 // import { IndigoVotingContext } from 'context/IndigoVotingContext'
 
 const RegisterUser = () => {

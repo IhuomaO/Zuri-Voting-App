@@ -1,7 +1,7 @@
 import React from 'react'
 
 import { useStoreContext } from "context/IndigoVotingContext";
-import { useState, useContext } from "react";
+import { useState } from "react";
 
 const OtherForms = () => {
 
@@ -9,7 +9,7 @@ const OtherForms = () => {
   const [startChange, setStartChange] = useState({})
   const [stopChange, setStopChange] = useState({})
   const { store, setStoreContext } = useStoreContext()
-  const { contract, contractDetails } = store
+  const { contract } = store
 
 
   // const { isOwner, isStakeHolder, isChairman, isLoading, isTeacher, isStudent, isBODMember, chairman } = contractDetails

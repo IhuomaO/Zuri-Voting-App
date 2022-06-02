@@ -1,7 +1,6 @@
 import React, { useEffect, useState, createContext, useContext } from "react";
 import { ethers } from "ethers";
 import { toast } from "react-toastify";
-import { useHistory } from "react-router-dom";
 
 import { contractABI, contractAddress } from "../utils/constants";
 

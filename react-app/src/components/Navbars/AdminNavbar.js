@@ -2,7 +2,6 @@ import React, { useEffect } from "react";
 
 import UserDropdown from "components/Dropdowns/UserDropdown.js";
 import { useStoreContext } from "context/IndigoVotingContext";
-import { Redirect } from "react-router-dom";
 import { useHistory } from "react-router-dom";
 
 export default function Navbar() {
@@ -10,7 +9,7 @@ export default function Navbar() {
 
 
   const { store } = useStoreContext()
-  const { connectWallet, currentAccount } = store
+  const { currentAccount } = store
 
 
 
