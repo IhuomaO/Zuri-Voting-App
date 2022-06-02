@@ -26,8 +26,8 @@ export const useStoreContext = () => useContext(IndigoVotingContext)
 
 const connectWallet = async (history) => {
   try {
-    console.log('trying to connect');
     if (!ethereum) return toast.warning("Please install metamask");
+    console.log('trying to connect');
     const accounts = await ethereum.request({
       method: "eth_requestAccounts",
     });
