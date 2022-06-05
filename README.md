@@ -5,7 +5,9 @@ This project demonstrates an advanced Hardhat use case, integrating other tools 
 
 The project comes with a sample contract, a test for that contract, a sample script that deploys that contract, and an example of a task implementation, which simply lists the available accounts. It also comes with a variety of other tools, preconfigured to work with the project code.
 
-View the live project, whilst using kovan test network, on:
+To view the live project, whilst using kovan test network, follow the link - https://indigo-voting.surge.sh
+
+Or copy it here and paste in your web browser:
 ```
 https://indigo-voting.surge.sh
 ```
