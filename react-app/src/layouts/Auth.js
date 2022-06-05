@@ -13,10 +13,16 @@ import FooterAdmin from "../components/Footers/FooterAdmin.js";
 import Dashboard from "../views/auth/Dashboard";
 import Settings from "../views/auth/Settings.js";
 import Tables from "../views/auth/Tables.js";
+// import { useStoreContext } from "context/IndigoVotingContext.js";
 // import AdminResponsibilities from "views/auth/AdminResponsibilities.js";
 // import Maps from "../views/auth/Maps.js";
 
 export default function Auth() {
+
+  // const { store } = useStoreContext()
+  // const { contractDetails } = store
+  // const { isOwner } = contractDetails
+
   return (
     <>
       <Sidebar />

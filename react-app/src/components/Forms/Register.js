@@ -1,7 +1,6 @@
 import { useStoreContext } from "context/IndigoVotingContext";
-import { IndigoVotingContext } from "context/IndigoVotingContext";
 import React from "react";
-import { useState, useContext } from "react";
+import { useState } from "react";
 // import useForm from "Hooks/useForm";
 
 function Register() {
@@ -10,34 +9,39 @@ function Register() {
   // const [candidateChange, setCandidateChange] = useState({})
   const { store } = useStoreContext()
   const { contract } = store
+  // const { isOwner, isStakeHolder, isChairman, isLoading, isTeacher, isStudent, isBODMember, chairman } = contractDetails
 
 
   const handleChange = (e) => {
-    let { name, value } = e.target
+    let { name, value, form } = e.target
 
-    if (e.target.form.name === 'create-candidate') {
+    if (form.name === 'create-candidate') {
+      if (name === 'electionID') value = Number(value)
+      if (name === 'candidateAddress') value = value.toLowerCase()
       setCandidateChange((prev) => ({ ...prev, [name]: value }))
     } else {
-
-      if (name === 'participants') value = value.replace(/ /g, '').split(',')
+      // if (name === 'participants') value = value.replace(/ /g, '').split(',')
       setElectionChange((prev) => ({ ...prev, [name]: value }))
     }
-
   }
 
   const handleSubmit = async (e) => {
-    console.log(Object.values(electionChange));
     e.preventDefault();
     try {
       if (e.target.name === 'create-election') {
+        console.log('Adding Election');
         const electionChangeArr = Object.values(electionChange)
         const res = await contract.setElectionDetails(...electionChangeArr)
         console.log(res);
+        setElectionChange({})
       }
       if (e.target.name === 'create-candidate') {
+        console.log('Adding Candidate');
         const candidateChangeArr = Object.values(candidateChange)
+        console.log(candidateChangeArr);
         const res = await contract.addCandidate(...candidateChangeArr)
         console.log(res);
+        setCandidateChange({})
       }
 
     } catch (error) {
@@ -67,12 +71,12 @@ function Register() {
                   Election Name
                 </label>
                 <input
-                  name='name'
+                  name='electionName'
                   type="text"
                   className="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
                   placeholder="Name"
                   onChange={handleChange}
-
+                  required
                 />
               </div>
 
@@ -84,48 +88,52 @@ function Register() {
                   Position
                 </label>
                 <input
-                  name='position'
+                  name='_electivePosition'
                   type="text"
                   className="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
                   placeholder="Position"
                   onChange={handleChange}
+                  required
 
                 />
               </div>
 
 
-              <div className="relative w-full mb-3">
+              {/* <div className="relative w-full mb-3">
                 <label
-                  className="block uppercase text-blueGray-600 text-xs font-bold mb-2"
-                  htmlFor="status"
+                className="block uppercase text-blueGray-600 text-xs font-bold mb-2"
+                htmlFor="status"
                 >
-                  Status
+                Status
                 </label>
                 <input
-                  name='status'
+                name='status'
                   type="number"
                   className="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
                   placeholder="Status"
+                  required
                   onChange={handleChange}
-                />
-              </div>
-
-              <div className="relative w-full mb-3">
-                <label
+                  />
+                  </div>
+                  
+                  <div className="relative w-full mb-3">
+                  <label
                   className="block uppercase text-blueGray-600 text-xs font-bold mt-6 mb-2"
                   htmlFor="grid-password"
-                >
+                  >
                   Participants
-                </label>
-                <input
+                  </label>
+                  <input
                   name='participants'
+                  required
                   type="text"
                   className="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
                   placeholder="Participants' Address(es) Separated by commas (,)"
                   onChange={handleChange}
+                  
+                  />
+                </div> */}
 
-                />
-              </div>
 
               <div className="text-center mt-6">
                 <button
@@ -139,8 +147,6 @@ function Register() {
           </div>
         </div>
       </div>
-
-
 
 
       <div className="relative flex flex-col min-w-0 break-words bg-white w-full mb-6 shadow-lg rounded">
@@ -157,17 +163,37 @@ function Register() {
               <div className="relative w-full mb-3">
                 <label
                   className="block uppercase text-blueGray-600 text-xs font-bold mt-6 mb-2"
+                  htmlFor="electionID"
+                >
+                  Election ID
+                </label>
+                <input
+                  name='electionID'
+                  type="number"
+                  className="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
+                  placeholder="Type in the Election ID"
+                  onChange={handleChange}
+
+                  required
+                />
+              </div>
+
+
+              <div className="relative w-full mb-3">
+                <label
+                  className="block uppercase text-blueGray-600 text-xs font-bold mt-6 mb-2"
                   htmlFor="grid-password"
                 >
                   Candidate Address
                 </label>
                 <input
-                  name='_candidateAddress'
+                  name='candidateAddress'
                   type="text"
                   className="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
-                  placeholder="Name"
+                  placeholder="Type in the Candidate's address"
                   onChange={handleChange}
 
+                  required
                 />
               </div>
 
@@ -176,13 +202,14 @@ function Register() {
                   className="block uppercase text-blueGray-600 text-xs font-bold mt-6 mb-2"
                   htmlFor="grid-password"
                 >
-                  Header
+                  Name of Candidate
                 </label>
                 <input
-                  name='_header'
+                  name='candidateName'
                   type="text"
                   className="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
-                  placeholder="Position"
+                  placeholder="Type in the name of the candidate"
+                  required
                   onChange={handleChange}
 
                 />
@@ -197,10 +224,11 @@ function Register() {
                   Slogan
                 </label>
                 <input
-                  name='_slogan'
-                  type="number"
+                  name='slogan'
+                  required
+                  type="text"
                   className="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
-                  placeholder="Status"
+                  placeholder="Slogan of Candidate"
                   onChange={handleChange}
                 />
               </div>
@@ -209,8 +237,9 @@ function Register() {
                 <button
                   className="bg-blueGray-800 text-white active:bg-blueGray-600 text-sm font-bold uppercase px-6 py-3 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 w-full ease-linear transition-all duration-150"
                   type="submit"
+
                 >
-                  Create Election
+                  Create Candidate
                 </button>
               </div>
             </form>

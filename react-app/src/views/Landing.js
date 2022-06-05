@@ -36,6 +36,7 @@ export default function Landing() {
                     any of your electoral process. Your voters can vote from any
                     location on any device.
                   </p>
+                  <p className="text-gray-400 italic"> Connect using Kovan testnet</p>
                 </div>
               </div>
             </div>

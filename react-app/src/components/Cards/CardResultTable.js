@@ -1,9 +1,14 @@
 import React from "react";
 import PropTypes from "prop-types";
+import { useStoreContext } from "context/IndigoVotingContext";
 
 // components
 
 export default function CardResultTable({ color }) {
+
+  const { store } = useStoreContext()
+  const { voted } = store
+
   return (
     <>
       <div
@@ -73,44 +78,51 @@ export default function CardResultTable({ color }) {
                 </th>
               </tr>
             </thead>
-            <tbody>
-              <tr>
-                <th className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4 text-left flex items-center">
-                  <img
-                    src={require("assets/img/5.jpg").default}
-                    className="h-12 w-12 bg-white rounded-full border"
-                    alt="..."
-                  ></img>{" "}
-                  <span
-                    className={
-                      "ml-3 font-bold " +
-                      +(color === "light" ? "text-blueGray-600" : "text-white")
-                    }
-                  >
-                    Secretary
-                  </span>
-                </th>
-                <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
-                  Student
-                </td>
-                <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
-                  <i className="fas fa-circle text-green-700 mr-2"></i>{" "}
-                  Completed
-                </td>
-                <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
-                  <div className="flex">
+
+
+            {voted &&
+              <tbody>
+                <tr>
+                  <th className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4 text-left flex items-center">
                     <img
-                      src={require("assets/img/1.png").default}
+                      src={require("assets/img/5.jpg").default}
+                      className="h-12 w-12 bg-white rounded-full border"
                       alt="..."
-                      className="w-10 h-10 rounded-full border-2 border-blueGray-50 shadow"
-                    ></img>
-                    <div className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
-                      Wangudo
+                    ></img>{" "}
+                    <span
+                      className={
+                        "ml-3 font-bold " +
+                        +(color === "light" ? "text-blueGray-600" : "text-white")
+                      }
+                    >
+                      Secretary
+                    </span>
+                  </th>
+                  <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
+                    Student
+                  </td>
+                  <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
+                    <i className="fas fa-circle text-green-700 mr-2"></i>{" "}
+                    Completed
+                  </td>
+                  <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
+                    <div className="flex">
+                      <img
+                        src={require("assets/img/1.png").default}
+                        alt="..."
+                        className="w-10 h-10 rounded-full border-2 border-blueGray-50 shadow"
+                      ></img>
+                      <div className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
+                        Wangudo
+                      </div>
                     </div>
-                  </div>
-                </td>
-              </tr>
-            </tbody>
+                  </td>
+                </tr>
+              </tbody>
+
+            }
+
+
           </table>
         </div>
       </div>

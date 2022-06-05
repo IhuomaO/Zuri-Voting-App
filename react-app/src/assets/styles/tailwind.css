@@ -520,6 +520,7 @@ video {
       [type='text'],
       [type='email'],
       [type='url'],
+      [type='number'],
       [type='month'],
       [type='time'],
       [type='week'],
@@ -540,7 +541,7 @@ video {
   line-height: 1.5rem;
 }
 
-[type='text']:focus, [type='email']:focus, [type='url']:focus, [type='month']:focus, [type='time']:focus, [type='week']:focus, textarea:focus, select:focus {
+[type='text']:focus, [type='email']:focus, [type='url']:focus, [type='number']:focus, [type='month']:focus, [type='time']:focus, [type='week']:focus, textarea:focus, select:focus {
   outline: 2px solid transparent;
   outline-offset: 2px;
   --tw-ring-inset: var(--tw-empty,/*!*/ /*!*/);
@@ -2160,6 +2161,11 @@ select {
   color: rgba(249, 115, 22, var(--tw-text-opacity));
 }
 
+.text-gray-400 {
+  --tw-text-opacity: 1;
+  color: rgba(161, 161, 170, var(--tw-text-opacity));
+}
+
 .text-gray-700 {
   --tw-text-opacity: 1;
   color: rgba(63, 63, 70, var(--tw-text-opacity));
@@ -2228,6 +2234,10 @@ select {
 .focus\:text-gray-700:focus {
   --tw-text-opacity: 1;
   color: rgba(63, 63, 70, var(--tw-text-opacity));
+}
+
+.italic {
+  font-style: italic;
 }
 
 .uppercase {

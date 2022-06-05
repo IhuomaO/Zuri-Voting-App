@@ -4,8 +4,13 @@ import PropTypes from "prop-types";
 // components
 
 import TableDropdown from "components/Dropdowns/TableDropdown.js";
+import { useStoreContext } from "context/IndigoVotingContext";
 
 export default function CardTable({ color }) {
+
+  const { store } = useStoreContext()
+  const { electionDetails } = store.contractDetails
+  // console.log(store.contractDetails);
   return (
     <>
       <div
@@ -41,7 +46,7 @@ export default function CardTable({ color }) {
                       : "bg-lightBlue-800 text-lightBlue-300 border-lightBlue-700")
                   }
                 >
-                  Name/Position
+                  Name
                 </th>
                 <th
                   className={
@@ -51,7 +56,7 @@ export default function CardTable({ color }) {
                       : "bg-lightBlue-800 text-lightBlue-300 border-lightBlue-700")
                   }
                 >
-                  Type
+                  Position
                 </th>
                 <th
                   className={
@@ -61,7 +66,7 @@ export default function CardTable({ color }) {
                       : "bg-lightBlue-800 text-lightBlue-300 border-lightBlue-700")
                   }
                 >
-                  Status
+                  Candidate Count
                 </th>
                 <th
                   className={
@@ -71,7 +76,8 @@ export default function CardTable({ color }) {
                       : "bg-lightBlue-800 text-lightBlue-300 border-lightBlue-700")
                   }
                 >
-                  Aspirants
+                  All Votes
+
                 </th>
                 <th
                   className={
@@ -93,32 +99,38 @@ export default function CardTable({ color }) {
                 ></th>
               </tr>
             </thead>
-            <tbody>
-              <tr>
-                <th className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4 text-left flex items-center">
-                  <img
-                    src={require("assets/img/7.png").default}
-                    className="h-12 w-12 bg-white rounded-full border"
-                    alt="..."
-                  ></img>{" "}
-                  <span
-                    className={
-                      "ml-3 font-bold " +
-                      +(color === "light" ? "text-blueGray-600" : "text-white")
-                    }
-                  >
-                    Secretary
-                  </span>
-                </th>
-                <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
-                  Student
-                </td>
-                <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
-                  <i className="fas fa-circle text-orange-500 mr-2"></i> delayed
-                </td>
-                <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
-                  <div className="flex">
+
+
+            {electionDetails?.map((electionDetail, i) => (
+              <tbody key={i}>
+                <tr>
+                  <th className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4 text-left flex items-center">
                     <img
+                      src={require("assets/img/7.png").default}
+                      className="h-12 w-12 bg-white rounded-full border"
+                      alt="..."
+                    ></img>{" "}
+                    <span
+                      className={
+                        "ml-3 font-bold " +
+                        +(color === "light" ? "text-blueGray-600" : "text-white")
+                      }
+                    >
+                      {electionDetail[0] || ' '}
+                    </span>
+                  </th>
+                  <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
+                    {electionDetail[1] || ' '}
+                    {/* SUGx */}
+                  </td>
+                  <td className="border-t-0 px-6 align-middle text-center border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
+                    {/* <i className="fas fa-circle text-orange-500 mr-2"></i> */}
+                    {Number(electionDetail[2]) || ' '}
+                  </td>
+                  <td className="border-t-0 px-6 align-middle text-center border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
+                    <div className="flex">
+                      {Number(electionDetails[3]) || ' '}
+                      {/* <img
                       src={require("assets/img/1.png").default}
                       alt="..."
                       className="w-10 h-10 rounded-full border-2 border-blueGray-50 shadow"
@@ -137,27 +149,22 @@ export default function CardTable({ color }) {
                       src={require("assets/img/4.png").default}
                       alt="..."
                       className="w-10 h-10 rounded-full border-2 border-blueGray-50 shadow -ml-4"
-                    ></img>
-                  </div>
-                </td>
-                <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
-                  <div className="flex items-center">
-                    <span className="mr-2">60%</span>
-                    <div className="relative w-full">
-                      <div className="overflow-hidden h-2 text-xs flex rounded bg-red-200">
-                        <div
-                          style={{ width: "60%" }}
-                          className="shadow-none flex flex-col text-center whitespace-nowrap text-white justify-center bg-red-500"
-                        ></div>
-                      </div>
+                    ></img> */}
                     </div>
-                  </div>
-                </td>
-                <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4 text-right">
-                  <TableDropdown />
-                </td>
-              </tr>
-            </tbody>
+                  </td>
+                  <td className="border-t-0 px-6 text-center align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
+                    <span className="">In Progress</span>
+                  </td>
+                  <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4 text-right">
+                    <TableDropdown />
+                  </td>
+                </tr>
+              </tbody>
+            ))
+            }
+
+
+
           </table>
         </div>
       </div>
